@@ -4,7 +4,7 @@
 
 ### Features
 
-* 提交测试1 ([703dd5b](https://github.com/SidoTenso/bookStore/commit/703dd5b))
-* 提交测试2 ([64bf1bf](https://github.com/SidoTenso/bookStore/commit/64bf1bf))
+* 忽略node包 ([1c457ba](https://github.com/SidoTenso/bookStore/commit/1c457ba))
+
 
 
