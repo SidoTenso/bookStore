@@ -1,0 +1,35 @@
+{
+  "name": "bookstore",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "commit": "git cz",
+    "changelog": "conventional-changelog -p angular -o CHANGELOG.md"
+  },
+  "config": {
+    "ghooks": {
+      "commit-msg": "./validate-commit-msg.js"
+    },
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SidoTenso/bookStore.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SidoTenso/bookStore/issues"
+  },
+  "homepage": "https://github.com/SidoTenso/bookStore#readme",
+  "description": "",
+  "devDependencies": {
+    "cz-conventional-changelog": "^2.1.0"
+  },
+  "dependencies": {
+    "conventional-changelog": "^1.1.17"
+  }
+}

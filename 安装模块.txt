@@ -1,0 +1,12 @@
+1.安装commitizen模块  (参考网址：http://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html，https://github.com/commitizen/cz-cli#making-your-repo-commitizen-friendly)
+    安装模块包
+        npm install -g commitizen
+        npm install -g cz-conventional-changelog
+        npm install -g conventional-changelog-cli
+    
+    初始化使其支持 Angular 的 Commit message 格式。
+        commitizen init cz-conventional-changelog --save-dev --save-exact
+
+    生成change_log
+    conventional-changelog -p angular -i CHANGELOG.md -w -r 0  (这一条是资料中的输出日志命令，但我这里并不能写进md文件，不清楚是模块更新还是ios与window的区别，所以我用的是下面这一条)
+    conventional-changelog -p angular -o CHANGELOG.md 
