@@ -6,20 +6,20 @@
         </div>
         <div class="content">
             <div class="form_group">
-                <form action="#" id="user_login">
+                <form action="#" id="user_login" v-submit data-action = "http://localhost:3000/register">
                     <div class="form_item borb">
-                        <input type="number" id="id" name="userid" placeholder="账号">
+                        <input type="number" id="name" name="username" placeholder="用户昵称">
                     </div>
                     <div class="form_item ">
                         <input type="text" id="psw" name="password" placeholder="密码">
                     </div>
                     <div class="form_item">
-                        <div class="button submit" v-press data-target="#user_login">
-                            登录
-                        </div>
+                        <button class="button submit" v-press  data-target="#user_login">
+                            注册
+                        </button>
                     </div>
                     <div class="form_item">
-                         <router-link to="/register" class="reg_link">新用户注册</router-link>
+                      <router-link to="/login" class="fl">已有账号？马上去登录</router-link>
                     </div>
                 </form>
             </div>
@@ -34,6 +34,7 @@
         v-press: 按钮点击变色指令
  */
 import { Group, Cell } from "vux";
+import axios from "axios";
 
 export default {
   components: {
@@ -59,6 +60,33 @@ export default {
         el.addEventListener("touchend", function(e) {
             el.style.backgroundColor="rgba(31, 84, 167, 0.52)";
         });
+      }
+    },
+    submit: {
+      inserted(el, bindding, vnode){
+        el.addEventListener('submit',function(e){
+          e.preventDefault();
+          var inputs = el.querySelectorAll('input'),
+              datas = {
+                length: 0
+              };
+          if(inputs){
+            [].forEach.call(inputs,function(item){
+              datas[item.name] = item.value;
+              datas.length+=1;
+            })
+
+          }
+          console.log(datas)
+          axios.post('http://localhost:3000/register?a=666',datas,{
+            "Content-Type": 'application/x-www-form-urlencoded'
+          }).then(function(data){
+            console.log(data)
+          })
+          
+          // console.log(target)
+
+        })
       }
     }
   },
@@ -139,7 +167,7 @@ export default {
   color: white;
   background-color: rgba(31, 84, 167, 0.521);
 }
-.reg_link {
+.form_group .form_item a {
   float: right;
   font-size: 3.75vw;
   color: rgb(7, 68, 160);
