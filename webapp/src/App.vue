@@ -1,12 +1,7 @@
 <template>
   <div id="app">
     <router-view></router-view>
-    <tabbar>
-      <tabbar-item>
-        <!-- <img slot="icon" src="../static/img/sprite"> -->
-        <span slot="label">Wechat</span>
-      </tabbar-item>
-    </tabbar>
+
   </div>
 </template>
 
@@ -29,3 +24,7 @@ body {
   background-color: #fbf9fe;
 }
 </style>
+<style>
+@import '../static/css/global.css'
+</style>
+
