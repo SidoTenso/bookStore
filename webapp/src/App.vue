@@ -1,18 +1,16 @@
 <template>
   <div id="app">
+    <top-nav></top-nav>
     <router-view></router-view>
-
   </div>
 </template>
 
 <script>
-import { Tabbar, TabbarItem  } from 'vux'
-
+import TopNav from '@/components/TopNav.vue'
 export default {
   name: 'app',
   components: {
-    Tabbar,
-    TabbarItem 
+    TopNav
   }
 }
 </script>
@@ -21,7 +19,7 @@ export default {
 @import '~vux/src/styles/reset.less';
 
 body {
-  background-color: #fbf9fe;
+  background-color: #101010;
 }
 </style>
 <style>

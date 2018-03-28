@@ -8,10 +8,10 @@
             <div class="form_group">
                 <form action="#" id="user_login" v-submit data-action = "http://localhost:3000/register">
                     <div class="form_item borb">
-                        <input type="number" id="name" name="username" placeholder="用户昵称">
+                        <input type="text" id="name" name="username" placeholder="用户昵称">
                     </div>
                     <div class="form_item ">
-                        <input type="text" id="psw" name="password" placeholder="密码">
+                        <input type="password" id="psw" name="password" placeholder="密码">
                     </div>
                     <div class="form_item">
                         <button class="button submit" v-press  data-target="#user_login">
@@ -81,7 +81,7 @@ export default {
           axios.post('http://localhost:3000/register?a=666',datas,{
             "Content-Type": 'application/x-www-form-urlencoded'
           }).then(function(data){
-            console.log(data)
+            // console.log(data)
           })
           
           // console.log(target)
@@ -154,9 +154,13 @@ export default {
   border-bottom: 1px solid rgba(0, 0, 0, 0.3);
 }
 .button {
+  border: none;
   width: 100%;
   font-size: 4.5vw;
   text-align: center;
+}
+.button:focus{
+  outline: none;
 }
 .form_group .form_item .submit {
   height: 11vw;
