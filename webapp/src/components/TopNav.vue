@@ -38,8 +38,15 @@
 
               <!-- 登陆栏 -->
               <td class="login_land">
-                <div class="login" @click="showModel(1)">登录</div>
-                <div class="register"  @click="showModel(2)">注册</div>
+                <template v-if="!isLogined">
+                  <div class="login" @click="showModel(1)">登录</div>
+                  <div class="register"  @click="showModel(2)">注册</div>
+                </template>
+                <template v-if="isLogined">
+                  <div class="user_box">
+                    <div class="username">{{userInfo.userName}}</div>
+                  </div>
+                </template>
                 <div class="clear"></div>
               </td>
 
@@ -50,7 +57,7 @@
     </table>
     <transition name="slideFromTop">
 
-      <login-model v-if="isModelShow" :modelConfig="modelConfig"></login-model>
+      <login-model v-if="isModelShow" @finished = "logined" :modelConfig="modelConfig"></login-model>
     </transition>
   
 
@@ -70,8 +77,10 @@ export default {
       isModelShow: false,
       modelConfig: {
         tit: '登录',
-        isRegist: false
-      }
+        isRegist: true
+      },
+      isLogined: false,
+      userInfo: {}
     }
   },
   methods: {
@@ -89,6 +98,13 @@ export default {
         default: 
         break;
       }
+    },
+    logined(userInfo){
+      console.log(userInfo)
+      this.userInfo = userInfo;
+      this.isModelShow = false;
+      this.isLogined = true;
+
     }
   }
 }
@@ -146,6 +162,7 @@ export default {
   float: left;
   color: #888;
   font-size: 16px;
+  cursor: pointer;
 }
 
 /* 搜索框  */
@@ -178,6 +195,13 @@ export default {
   width: 50%;
   cursor: pointer;
 }
+.login_land .user_box{
+  width: 100%;
+  height: 100%;
+}
+.login_land .user_box .username{
+  text-align: right;
+}
 
 .slideFromTop-enter{
   transition: all 5s cubic-bezier(.53,1.6,.92,1.54);
@@ -186,4 +210,5 @@ export default {
 .slideFromTop-enter-active{
   transition: all 5s cubic-bezier(.53,1.6,.92,1.54);
 }
+
 </style>

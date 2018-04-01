@@ -7,7 +7,7 @@ const baseWebpackConfig = require('./webpack.base.conf')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
-const myapp = require('../../myserver/app')
+// const myapp = require('../../myserver/app')
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -62,9 +62,9 @@ module.exports = new Promise((resolve, reject) => {
       process.env.PORT = port
       // add port to devServer config
       devWebpackConfig.devServer.port = port
-      myapp.listen(3000,()=> {
-            console.log('\n-----------------------------后台服务器已开启于3000端口-----------------------------\n');
-        })
+      // myapp.listen(3000,()=> {
+      //       console.log('\n-----------------------------后台服务器已开启于3000端口-----------------------------\n');
+      //   })
       // Add FriendlyErrorsPlugin
       devWebpackConfig.plugins.push(new FriendlyErrorsPlugin({
         compilationSuccessInfo: {

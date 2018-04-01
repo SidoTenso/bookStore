@@ -4,11 +4,13 @@ import Vue from 'vue'
 import FastClick from 'fastclick'
 import App from './App'
 import router from './router/index'
+import myTools from './plugins/myTools'
 
 
 FastClick.attach(document.body)
 
 Vue.config.productionTip = false
+Vue.use(myTools);
 
 /* eslint-disable no-new */
 new Vue({
