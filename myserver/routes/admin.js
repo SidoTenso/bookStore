@@ -59,7 +59,7 @@ app.post('/register',(req,res) => {
                     }
                     Mail.sendMail({
                         email: req.body.email,
-                        url: 'http://localhost:3000?key='+md5(req.body.email+Date.now())
+                        keyValue: md5(req.body.email+Date.now())
                     }).then(()=>{
                         res.status(200).json({
                             status: 1,

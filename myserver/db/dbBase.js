@@ -24,14 +24,12 @@ class DbBase {
 
     saveData(data,callback){
 
-        if(errMsg) {
-            typeof callback == 'function' && callback(errMsg);
-            return;
-        }else{
-            let model = new this.model(data);
-            model.save(callback);
-        }
+        let model = new this.model(data);
+        model.save(callback);
         
+    }
+    updateData(filter,newData,callback){
+        this.model.update(filter,newData,callback)
     }
 }
  
