@@ -83,6 +83,7 @@ export default {
             // 注册成功 / 登录成功
             this.loadingMsg = this.modelConfig.tit+'成功'
             setTimeout(() => {
+              console.log(res)
               this.$emit('finished',res.data.userInfo)
             }, 800);
           }else{

@@ -3,13 +3,16 @@ const express = require('express'),
     cookieParser = require('cookie-parser'),
     app = express.Router(),
     User = require('../db/user').User,
-    userdb = new User();
+    userdb = new User(),
+    md5 = str=>require('crypto').createHash('md5').update(str).digest('hex'),
+    Mail = new (require('../db/mail').Mail)();
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
+// 登录
 app.post('/login',(req,res) => {
-    userdb.getData({email: req.body.email,psw: req.body.psw},(err,data)=>{
+    userdb.getData({email: req.body.email,psw: md5(req.body.psw)},(err,data)=>{
         if(!err){
             
             if(data.length == 0){
@@ -34,6 +37,7 @@ app.post('/login',(req,res) => {
         }
     })
 })
+// 注册
 app.post('/register',(req,res) => {
     userdb.getData({email: req.body.email},(err,data)=>{
         if(!err){
@@ -44,6 +48,7 @@ app.post('/register',(req,res) => {
                 })
                 return;
             }else{
+                req.body.psw = md5(req.body.psw);
                 userdb.saveData(req.body,(err)=>{
                     if(err){
                         res.status(200).json({
@@ -52,13 +57,19 @@ app.post('/register',(req,res) => {
                         })
                         return;
                     }
-                    res.status(200).json({
-                        status: 1,
-                        msg: '注册成功'
+                    Mail.sendMail({
+                        email: req.body.email,
+                        url: 'http://localhost:3000?key='+md5(req.body.email+Date.now())
+                    }).then(()=>{
+                        res.status(200).json({
+                            status: 1,
+                            msg: '注册成功',
+                            userInfo: req.body
+                        })
+                        
                     })
                 })
             }
-            console.log(data)
         }else{
             res.status(200).json({
                 status: 5,
