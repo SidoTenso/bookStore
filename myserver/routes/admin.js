@@ -80,4 +80,28 @@ app.post('/register',(req,res) => {
     })
 }) 
 
+// 激活账号
+app.get('/activation',(req,res)=>{
+    console.log(req.query.key)
+    Mail.getData({value:req.query.key},(err,data)=>{
+        if(!err){
+            if(data.length == 0){
+                res.send('该链接已失效')
+            }else{
+                Mail.removeData({value:req.query.key},(removeErr)=>{
+                    if(!removeErr){
+                        userdb.updateData({email: data[0].email},{activation:true},(err,data)=>{
+                            console.log(data)
+                            res.send('激活成功')
+                        })
+                    }else{
+                        res.send('激活失败')
+                    }
+                })
+            }
+        }
+    })
+})
+
+
 module.exports = app;

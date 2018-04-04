@@ -19,7 +19,7 @@ class DbBase {
     }
 
     getData(filter,callback){
-        this.model.find(filter,callback)
+        return this.model.find(filter,callback)
     }
 
     saveData(data,callback){
@@ -28,8 +28,12 @@ class DbBase {
         model.save(callback);
         
     }
-    updateData(filter,newData,callback){
-        this.model.update(filter,newData,callback)
+    updateData(...args){
+        this.model.update(...args)
+    }
+    
+    removeData(...args){
+        return this.model.remove(...args)
     }
 }
  
