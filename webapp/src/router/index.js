@@ -13,11 +13,11 @@ export default new Router({
       name: 'main_view',
       component: Main
     },
-    {
-      path: '/login',
-      name: 'login_view',
-      component: Login
-    },
+    // {
+    //   path: '/login',
+    //   name: 'login_view',
+    //   component: Login
+    // },
     {
       path: '/register',
       name: 'register_view',

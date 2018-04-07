@@ -2,12 +2,24 @@ const dbBase = require('./dbBase').DbBase,
     mongoose = require('./dbBase').mongoose;
 
 const prodSchema = mongoose.Schema({
-    userName: String,
-    email: String,
-    productions: [{type: mongoose.Schema.Types.ObjectId, ref: 'production'}]
+    prodName: String,
+    likes: Number,
+    attr: String,
+    status: String,
+    author: [{type: mongoose.Schema.Types.ObjectId, ref: 'user'}],
+    comments:[{
+        comment: String,
+        observer:{type: mongoose.Schema.Types.ObjectId,ref: 'user'}
+    }]
 })
 
-const Production = mongoose.model('user',prodSchema);
+const ProdModel = mongoose.model('production',prodSchema);
+
+class Production extends dbBase{
+    constructor(){
+        super(ProdModel);
+    }
+}
 
 module.exports = {
     mongoose,
