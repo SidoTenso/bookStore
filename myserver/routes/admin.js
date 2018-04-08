@@ -5,7 +5,8 @@ const express = require('express'),
     User = require('../db/user').User,
     userdb = new User(),
     md5 = str=>require('crypto').createHash('md5').update(str).digest('hex'),
-    Mail = new (require('../db/mail').Mail)();
+    Mail = require('../db/mail').Mail;
+    maildb = new Mail();
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
@@ -83,12 +84,12 @@ app.post('/register',(req,res) => {
 // 激活账号
 app.get('/activation',(req,res)=>{
     console.log(req.query.key)
-    Mail.getData({value:req.query.key},(err,data)=>{
+    maildb.getData({value:req.query.key},(err,data)=>{
         if(!err){
             if(data.length == 0){
                 res.send('该链接已失效')
             }else{
-                Mail.removeData({value:req.query.key},(removeErr)=>{
+                maildb.removeData({value:req.query.key},(removeErr)=>{
                     if(!removeErr){
                         userdb.updateData({email: data[0].email},{activation:true},(err,data)=>{
                             console.log(data)
