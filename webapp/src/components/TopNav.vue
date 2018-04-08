@@ -100,10 +100,11 @@ export default {
       }
     },
     logined(userInfo){
-      console.log(userInfo)
-      this.userInfo = userInfo;
+      if(userInfo !== 'cancle'){
+        this.userInfo = userInfo;
+        this.isLogined = true;
+      }
       this.isModelShow = false;
-      this.isLogined = true;
 
     }
   }
@@ -122,6 +123,7 @@ export default {
   padding: 0 40px;
   overflow: hidden;
   background-color: #000;
+  z-index: 1000;
 }
 .nav_box>table{
   height: 65px;

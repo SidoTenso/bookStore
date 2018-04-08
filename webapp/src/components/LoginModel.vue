@@ -29,7 +29,7 @@
              </div> 
              <div class="btn_box"> 
               <span class="login_btn btn" @click="postMsg">{{modelConfig.tit}}</span> 
-              <span class="btn cancle_btn" @click="emitParent('finished')" style="">取消</span> 
+              <span class="btn cancle_btn" @click="emitParent('finished','cancle')" style="">取消</span> 
              </div> 
             </center> 
            </div> 
