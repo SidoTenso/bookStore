@@ -1,6 +1,6 @@
 <template>
   <div class="prod_item">
-      <router-link to="/?id=666">
+      <router-link :to="'/photos?id='+ prodInfo.id">
         <div class="img_box">
             <img :src="prodInfo.img" alt="">
         </div>

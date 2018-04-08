@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <top-nav></top-nav>
-    <router-view></router-view>
+    <div class="main_content">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -23,6 +25,11 @@ body {
 }
 </style>
 <style>
-@import '../static/css/global.css'
+@import '../static/css/global.css';
+.main_content{
+  box-sizing: border-box;
+  width: 100%;
+  padding-top: 65px;
+}
 </style>
 

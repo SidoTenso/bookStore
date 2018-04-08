@@ -1,5 +1,5 @@
 <template>
-  <div class="main_content">
+  <div>
     <div class="banner">
       <img src="" alt="">
     </div>
@@ -22,7 +22,7 @@
     <!-- 照片列表 -->
     <div class="prod_listbox">
       <template v-for="n in 11">
-        <prod-item :key="n" :prodInfo="{img:require('../../static/image/test_prod.jpg'),author: '李时珍'}"></prod-item>
+        <prod-item :key="n" :prodInfo="{img:require('../../static/image/test_prod.jpg'),author: '李时珍',id: '233'}"></prod-item>
         <div v-if="n%3 == 0" class="clear" :key="'clear'+n" ></div>
       </template>
     </div>
@@ -53,11 +53,7 @@ export default {
 </script>
 
 <style>
-.main_content{
-  width: 100%;
-  padding-top: 65px;
 
-}
 .banner{
   width: 100%;
   height: 360px;
@@ -115,7 +111,7 @@ export default {
   bottom: 20px;
   width: 100%;
   padding: 50px 0 80px;
-  border: 1px solid #222;
+  border-top: 1px solid #222;
   font-size: 19px;
   text-align: center;
 }
