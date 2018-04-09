@@ -9,6 +9,7 @@ const fetch = Axios.create({
     // 不设置这个服务器不能写cookie到浏览器，并且服务器要设置Access-Control-Allow-Credentials:true
     // Access-Control-Allow-Origin不可以为 '*'，因为 '*' 会和 Access-Control-Allow-Credentials:true 冲突，需配置指定的地址
     withCredentials: true, // 允许携带cookie 
+    credentials : 'include',
     transformRequest: [
         function (data) {
             let ret = "";

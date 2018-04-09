@@ -18,7 +18,7 @@
                   <li class="list_item">
                     版画
                   </li>
-                  <li class="list_item">
+                  <li class="list_item" @click="upload">
                     上传
                   </li>
                   <li class="list_item">
@@ -55,9 +55,15 @@
         </td>
       </tr>
     </table>
+    <!-- 登录模态框 -->
     <transition name="slideFromTop">
 
       <login-model v-if="isModelShow" @finished = "logined" :modelConfig="modelConfig"></login-model>
+    </transition>
+
+    <!-- 上传模态框 -->
+    <transition name="rubberBand">
+      <upload v-if="isUploadShow"></upload>
     </transition>
   
 
@@ -65,55 +71,83 @@
 </template>
 
 <script>
-import LoginModel from '@/components/LoginModel'
-import { fail } from 'assert';
+import LoginModel from "@/components/LoginModel";
+import Upload from "@/components/Upload.vue";
+import { fail } from "assert";
 export default {
-  components:{
-    LoginModel
+  components: {
+    LoginModel,
+    Upload
   },
-  name: 'HelloWorld',
-  data () {
+  name: "HelloWorld",
+  data() {
     return {
       isModelShow: false,
+      isUploadShow: false,
       modelConfig: {
-        tit: '登录',
+        tit: "登录",
         isRegist: true
       },
       isLogined: false,
       userInfo: {}
-    }
+    };
+  },
+  beforeMount() {
+    // 检查是否是登陆状态
+    this.checkLogin();
   },
   methods: {
-    showModel(type){
+    showModel(type,callback) {
       this.isModelShow = true;
-      switch (type){
+      switch (type) {
         case 1:
-          this.modelConfig.tit = '登录',
-          this.modelConfig.isRegist = false;
-        break;
+          (this.modelConfig.tit = "登录"), (this.modelConfig.isRegist = false);
+          break;
         case 2:
-          this.modelConfig.tit = '注册',
-          this.modelConfig.isRegist = true;
-        break;
-        default: 
-        break;
+          (this.modelConfig.tit = "注册"), (this.modelConfig.isRegist = true);
+          break;
+        default:
+          break;
       }
     },
-    logined(userInfo){
-      if(userInfo !== 'cancle'){
+    logined(userInfo) {
+      if (userInfo !== "cancle") {
         this.userInfo = userInfo;
         this.isLogined = true;
       }
       this.isModelShow = false;
+    },
+    checkLogin() {
+      let userId = this.cookies.getCookie('userId');
+      let url = 'http://localhost:3000/admin/getUserInfo'
+      if(!userId){
 
+        this.isLogined = false;
+
+      }else{
+        this.fetch.post(url,{
+          userId
+        }).then(res=>{
+          console.log(res);
+          if(res.data.status == 1){
+            this.isLogined = true;
+            this.userInfo = res.data.userInfo;
+          }
+        })
+        // return this.log
+      }
+    },
+
+    upload() {
+      this.isUploadShow = true;
     }
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.nav_box{
+.nav_box {
   position: fixed;
   box-sizing: border-box;
   top: 0;
@@ -125,39 +159,38 @@ export default {
   background-color: #000;
   z-index: 1000;
 }
-.nav_box>table{
+.nav_box > table {
   height: 65px;
   width: 100%;
   border-spacing: 00;
 }
-.nav_box .logo{
+.nav_box .logo {
   /* float: left;
   max-width: 100px; */
   width: 100px;
   height: 100%;
 }
-.nav_box .logo img{
+.nav_box .logo img {
   width: 35px;
   height: 35px;
   margin-top: 5px;
 }
-.nav_box .nav_r{
+.nav_box .nav_r {
 }
 /* 导航列表 */
-.nav_box .fun_list{
+.nav_box .fun_list {
   /* float: left; */
   min-width: 365px;
   width: 365px;
-
 }
-.nav_box .fun_list ul::after{
-  content: '';
+.nav_box .fun_list ul::after {
+  content: "";
   width: 100%;
   height: 0;
   display: block;
   clear: both;
 }
-.nav_box .fun_list ul li{
+.nav_box .fun_list ul li {
   position: relative;
   box-sizing: border-box;
   padding: 13px 20px;
@@ -168,7 +201,7 @@ export default {
 }
 
 /* 搜索框  */
-.nav_box .search_box{
+.nav_box .search_box {
 }
 .nav_box .search_box .logo {
   width: 16px;
@@ -179,38 +212,29 @@ export default {
   background: url(../../static/image/svg/search.svg);
 }
 /* 登陆栏 */
-.login_land{
-  width:150px;
+.login_land {
+  width: 150px;
   min-width: 150px;
   color: #aaa;
   font-size: 16px;
   text-align: center;
 }
-.login_land .login{
+.login_land .login {
   float: left;
   width: 50%;
   cursor: pointer;
 }
 
-.login_land .register{
+.login_land .register {
   float: right;
   width: 50%;
   cursor: pointer;
 }
-.login_land .user_box{
+.login_land .user_box {
   width: 100%;
   height: 100%;
 }
-.login_land .user_box .username{
+.login_land .user_box .username {
   text-align: right;
 }
-
-.slideFromTop-enter{
-  transition: all 5s cubic-bezier(.53,1.6,.92,1.54);
-  top:-700px;
-}
-.slideFromTop-enter-active{
-  transition: all 5s cubic-bezier(.53,1.6,.92,1.54);
-}
-
 </style>

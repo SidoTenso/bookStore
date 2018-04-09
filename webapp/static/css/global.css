@@ -29,3 +29,8 @@ ul,li{
 table{
     width: 100%;
 }
+.justify{
+    text-align: justify;
+    text-align-last: justify;
+    -moz-text-align-last: justify;
+}

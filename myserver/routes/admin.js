@@ -22,7 +22,9 @@ app.post('/login',(req,res) => {
                     msg: '用户邮箱或密码错误'
                 })
             }else{
-                res.cookie('userId',data[0]._id,{maxAge: 30*60*1000});
+                let userId = String(data[0]._id)
+                console.log(JSON.stringify(data[0]._id));
+                res.cookie('userId',userId,{maxAge: 30*60*1000});
                 res.status(200).json({
                     status:1,
                     msg: '登录成功',
@@ -58,10 +60,11 @@ app.post('/register',(req,res) => {
                         })
                         return;
                     }
-                    Mail.sendMail({
+                    maildb.sendMail({
                         email: req.body.email,
                         keyValue: md5(req.body.email+Date.now())
                     }).then(()=>{
+                        res.cookie('userId',data[0]._id,{maxAge: 30*60*1000});
                         res.status(200).json({
                             status: 1,
                             msg: '注册成功',
@@ -100,6 +103,32 @@ app.get('/activation',(req,res)=>{
                     }
                 })
             }
+        }
+    })
+})
+
+// 获取用户信息
+app.post('/getUserInfo',(req,res)=>{
+    console.log(req.body)
+    let userId = req.body.userId;
+    userdb.getData({_id: userId},(err,data)=>{
+        if(!err){
+            let userInfo = {
+                userName: data[0].userName,
+                activation: data[0].activation,
+                attentions: data[0].attentions,
+                collect: data[0].collect,
+                email: data[0].email,
+                fans: data[0].fans,
+                productions: data[0].productions,
+                _id: data[0]._id,
+
+            }
+            res.status(200).json({
+                status: 1,
+                msg: '',
+                userInfo
+            })
         }
     })
 })
