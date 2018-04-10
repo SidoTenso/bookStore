@@ -1,6 +1,7 @@
 const express = require('express'),
-    bodyParser = require('body-parser'),
-    cookieParser = require('cookie-parser'),
+    // bodyParser = require('body-parser'),
+    // cookieParser = require('cookie-parser'),
+    // photosHandler = require('../common/photos'),
     app = express.Router(),
     User = require('../db/user').User,
     userdb = new User(),
@@ -8,8 +9,10 @@ const express = require('express'),
     Mail = require('../db/mail').Mail;
     maildb = new Mail();
 
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(cookieParser());
+const multer = require('multer'),
+    upload = multer({dest: '../routes/'})
+
+
 
 // 登录
 app.post('/login',(req,res) => {
@@ -131,6 +134,15 @@ app.post('/getUserInfo',(req,res)=>{
                 userInfo
             })
         }
+    })
+})
+
+
+// 用户上传图片
+app.post('/photos',upload.single('photos'),(req,res)=>{
+    console.log(req.file)
+    res.status(200).json({
+        msg: 5
     })
 })
 

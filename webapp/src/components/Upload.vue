@@ -4,9 +4,10 @@
           上传你的作品
       </div>
       <div class="form_box">
+        <form action="#" method="post" enctype="multipart/form-data" id="photos_form">
           <div class="form_row">
               <div class="label justify">
-                作品名称 :
+                作品名称:
               </div>
               <div class="inputbox">
                   <input type="text" name="prodName" min="0" placeholder="您的作品名称" autocomplete="off">
@@ -18,17 +19,34 @@
           </div>
           <div class="form_row">
               <div class="label justify">
-                作品 :
+                作品:
               </div>
-              <div class="inputbox">
+              <div class="inputbox file_box" @click.capture="file_click">
                   <!-- <input type="" name="prodName" min="0" placeholder="您的作品名称" autocomplete="off"> -->
-                  <input type="file" name="" id="">
+                  <span>{{fileName}}</span> 
+                  <input type="file" name="photos" id="photos" accept="image/*" @change="file_change" >
               </div>
               <span class="form_unit"></span>
               <div class="infobox">
               </div>
               <div class="clear"></div>
           </div>
+          <div class="form_row">
+            <div class="label justify">
+              描述:
+            </div>
+            <div class="inputbox textarea">
+              <textarea name="" id="" cols="30" rows="10"></textarea>
+            </div>
+            <div class="clear"></div>
+          </div>
+          <div class="form_row">
+            <div class="label justify"></div>
+            <div class="upload btn" @click="upload">
+              上传
+            </div>
+          </div>
+        </form>
       </div> 
 
   </div>
@@ -37,7 +55,38 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      fileName: '点击上传您的文件',
+      photos:{}
+    };
+  },
+  methods: {
+    file_click(e){
+      console.log(this);
+      console.log(e.currentTarget,e.target,e);
+      e.currentTarget.querySelector('input[type="file"]').click()
+    },
+    file_change(e){
+      // console.log(e.target.files)
+      if(e.target.files.length !== 0){
+        let file = e.target.files[0];
+        this.fileName = file.name;
+        this.photos = file;
+      }
+    },
+    upload(){
+      console.log(this.photos)
+      let formData = new FormData();
+      formData.append('photos',this.photos)
+      console.log(formData.get('photos'))
+      this.fetch.post('http://localhost:3000/admin/photos',FormData,{
+        headers:{
+          "Content-Type": 'multipart/form-data'
+        }
+      }).then(res=>{
+        console.log(res)
+      })
+    }
   }
 };
 </script>
@@ -79,6 +128,7 @@ export default {
 .upload_form .form_box .label{
     float: left;
     width: 80px;
+    min-height: 1px;
     font-size: 16px;
     color: #aaa;
     line-height: 38px;
@@ -87,6 +137,8 @@ export default {
 .upload_form .form_box .inputbox{
     float: left;
     height: 38px;
+    width: 230px;
+    overflow: hidden;
     margin-left: 30px;
     padding-left: 20px;
     padding-right: 10px;
@@ -102,6 +154,56 @@ export default {
 }
 .upload_form .form_box .inputbox input:focus{
     outline: none;
+}
+.upload_form .form_box .inputbox textarea{
+  height: 100px;
+}
+.upload_form .form_box .inputbox.file_box{
+  font-size: 14px;
+  color: #666;
+  line-height: 38px;
+  cursor: pointer;
+}
+.upload_form .form_box .inputbox.textarea{
+  height: auto;
+}
+.upload_form .form_box .inputbox.file_box input{
+  display: block;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+
+}
+.upload_form .form_box .inputbox.textarea textarea{
+    line-height: 25px;
+    background: inherit;
+    border: none;
+    color: #999;
+    resize: none;
+}
+.upload_form .form_box .inputbox.textarea textarea:focus{
+  outline: none;
+}
+.upload_form .form_box .btn{
+  float: left;
+  margin-left: 30px;
+  width: 80px;
+  height: 38px;
+  line-height: 38px;
+  border-radius: 5px;
+  background: #454545;
+  color: #999;
+  cursor: pointer;
+  text-align: center;
+  user-select: none;
+}
+.upload_form .form_box .btn:active{
+  background: #515151;
+
+}
+.upload_form .form_box .btn:hover{
+  background: #555;
 }
 
 .rubberBand-enter-active {
