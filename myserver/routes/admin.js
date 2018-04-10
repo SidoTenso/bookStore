@@ -1,16 +1,18 @@
 const express = require('express'),
     // bodyParser = require('body-parser'),
     // cookieParser = require('cookie-parser'),
-    // photosHandler = require('../common/photos'),
+    photosHandler = require('../common/photos'),
     app = express.Router(),
     User = require('../db/user').User,
     userdb = new User(),
+    Production = require('../db/production').Production,
+    prodb = new Production(),
     md5 = str=>require('crypto').createHash('md5').update(str).digest('hex'),
     Mail = require('../db/mail').Mail;
     maildb = new Mail();
 
-const multer = require('multer'),
-    upload = multer({dest: '../routes/'})
+// const multer = require('multer'),
+//     upload = multer({dest: '../routes/'})
 
 
 
@@ -139,11 +141,46 @@ app.post('/getUserInfo',(req,res)=>{
 
 
 // 用户上传图片
-app.post('/photos',upload.single('photos'),(req,res)=>{
-    console.log(req.file)
-    res.status(200).json({
-        msg: 5
-    })
+app.post('/photos',photosHandler,(req,res)=>{
+    // console.log(req.file,req.body)
+    var userId = req.cookies.userId
+    console.log(userId)
+    if(userId){
+        userdb.getData({_id:userId},(err,data)=>{
+            if(!err && data.length !=0 ){
+                let defaultData = {
+                    prodName: '默认名字',
+                    likes: 0,
+                    src: '/image/userphotos/default.JPG',
+                    attr: 'popular',
+                    status: 'pass',
+                    author: data[0]._id
+                }
+            
+                let proData = Object.assign(defaultData,req.body)
+
+                prodb.saveData(proData,(proErr)=>{
+                    if(!proErr){
+                        res.status(200).json({
+                            status: 1,
+                            msg: '存入成功'
+                        })
+                    }
+                })
+            }else{
+                res.status(200).json({
+                    status: 3,
+                    msg: '用户信息错误，重新登录'
+                })
+            }
+        })
+    }else{
+        res.status(200).json({
+            status: 3,
+            msg: '用户信息错误，重新登录'
+        })
+    }
+
 })
 
 

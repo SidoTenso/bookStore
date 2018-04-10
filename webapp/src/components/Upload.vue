@@ -10,7 +10,7 @@
                 作品名称:
               </div>
               <div class="inputbox">
-                  <input type="text" name="prodName" min="0" placeholder="您的作品名称" autocomplete="off">
+                  <input type="text" v-model="prodName" name="prodName" min="0" placeholder="您的作品名称" autocomplete="off">
               </div>
               <span class="form_unit"></span>
               <div class="infobox">
@@ -36,7 +36,7 @@
               描述:
             </div>
             <div class="inputbox textarea">
-              <textarea name="" id="" cols="30" rows="10"></textarea>
+              <textarea v-model="description" name="" id="" cols="30" rows="10"></textarea>
             </div>
             <div class="clear"></div>
           </div>
@@ -57,7 +57,9 @@ export default {
   data() {
     return {
       fileName: '点击上传您的文件',
-      photos:{}
+      photos:{},
+      prodName: '',
+      description: ''
     };
   },
   methods: {
@@ -78,12 +80,10 @@ export default {
       console.log(this.photos)
       let formData = new FormData();
       formData.append('photos',this.photos)
+      formData.append('prodName',this.prodName)
+      formData.append('description',this.description)
       console.log(formData.get('photos'))
-      this.fetch.post('http://localhost:3000/admin/photos',FormData,{
-        headers:{
-          "Content-Type": 'multipart/form-data'
-        }
-      }).then(res=>{
+      this.fetch('formData').post('http://localhost:3000/admin/photos',formData).then(res=>{
         console.log(res)
       })
     }

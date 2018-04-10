@@ -1,6 +1,6 @@
 import Axios from "axios";
 
-const fetch = Axios.create({
+const urlencoded = Axios.create({
     timeout: 7000, // 请求的超时时间
     // 设置默认请求头，使post请求发送的是formdata格式数据// axios的header默认的Content-Type好像是'application/json;charset=UTF-8',我的项目都是用json格式传输，如果需要更改的话，可以用这种方式修改
     headers: {
@@ -26,7 +26,7 @@ const fetch = Axios.create({
 })
 
 // request拦截器
-fetch.interceptors.request.use(
+urlencoded.interceptors.request.use(
     config => {
       // 发送请求之前，要做的业务
       return config
@@ -39,7 +39,7 @@ fetch.interceptors.request.use(
   )
   
   // response拦截器
-  fetch.interceptors.response.use(
+  urlencoded.interceptors.response.use(
     response => {
       // 数据响应之后，要做的业务
       return response
@@ -48,5 +48,17 @@ fetch.interceptors.request.use(
       return Promise.reject(error)
     }
   )
+
+const formData = Axios.create({
+  timeout: 12000,
+  withCredentials: true, // 允许携带cookie 
+  credentials : 'include',
+  headers: {
+    "Content-Type": "multipart/form-data"
+  }
+})
   
-  export default fetch
+  export {
+    urlencoded,
+    formData
+  }

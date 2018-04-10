@@ -71,7 +71,7 @@ export default {
       let url = this.modelConfig.isRegist ? this.url.register : this.url.login;
       this.isLoading = true;
       this.loadingMsg =  this.modelConfig.tit+'中，请稍候...';
-      this.fetch.post(url,
+      this.fetch().post(url,
           {
             userName: this.userName,
             email: this.email,

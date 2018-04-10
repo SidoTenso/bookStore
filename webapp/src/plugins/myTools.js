@@ -1,4 +1,4 @@
-import fetch from '../common/fetch'
+import {urlencoded,formData} from '../common/fetch'
 
 module.exports = {
     install: function(Vue,options){
@@ -23,7 +23,14 @@ module.exports = {
             
             
         }
-        Vue.prototype.fetch = fetch
+        Vue.prototype.fetch = function(contentType){
+            switch(contentType){
+                case 'formData':
+                    return formData
+                default: 
+                    return urlencoded
+            }
+        }
 
 
     }

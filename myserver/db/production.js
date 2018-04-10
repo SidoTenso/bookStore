@@ -4,9 +4,10 @@ const dbBase = require('./dbBase').DbBase,
 const prodSchema = mongoose.Schema({
     prodName: String,
     likes: Number,
+    src: String,
     attr: String,
     status: String,
-    author: [{type: mongoose.Schema.Types.ObjectId, ref: 'user'}],
+    author: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
     comments:[{
         comment: String,
         observer:{type: mongoose.Schema.Types.ObjectId,ref: 'user'}
