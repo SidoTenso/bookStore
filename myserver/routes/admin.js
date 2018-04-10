@@ -52,7 +52,7 @@ app.post('/register',(req,res) => {
                 return;
             }else{
                 req.body.psw = md5(req.body.psw);
-                userdb.saveData(req.body,(err)=>{
+                userdb.saveData(req.body,(err,doc)=>{
                     if(err){
                         res.status(200).json({
                             status: 5,
@@ -64,7 +64,8 @@ app.post('/register',(req,res) => {
                         email: req.body.email,
                         keyValue: md5(req.body.email+Date.now())
                     }).then(()=>{
-                        res.cookie('userId',data[0]._id,{maxAge: 30*60*1000});
+                        let userId = String(doc._id)
+                        res.cookie('userId',userId,{maxAge: 30*60*1000});
                         res.status(200).json({
                             status: 1,
                             msg: '注册成功',
