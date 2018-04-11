@@ -84,7 +84,11 @@ export default {
       formData.append('description',this.description)
       console.log(formData.get('photos'))
       this.fetch('formData').post('http://localhost:3000/admin/photos',formData).then(res=>{
-        console.log(res)
+        // console.log(res)
+        if(res.data.status == 1){
+          alert('上传成功')
+          this.$emit('finished')
+        }
       })
     }
   }

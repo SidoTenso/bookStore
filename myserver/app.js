@@ -4,7 +4,8 @@ const express = require('express'),
     bodyParser = require("body-parser"),
     cookieParser = require('cookie-parser'),
     app = express(),
-    admin = require('./routes/admin');
+    admin = require('./routes/admin'),
+    production = require('./routes/production');
 
 app.use(express.static('myserver/public'));
 // app.use(bodyParser.urlencoded({extended:true}));
@@ -24,6 +25,7 @@ app.use("*",(req,res,next)=>{
 
 
 app.use('/admin',admin);
+app.use('/prod',production);
 
 // module.exports = app
 app.listen(3000,()=> {
