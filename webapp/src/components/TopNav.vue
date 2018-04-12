@@ -63,7 +63,7 @@
 
     <!-- 上传模态框 -->
     <transition name="rubberBand">
-      <upload v-if="isUploadShow"></upload>
+      <upload v-if="isUploadShow" @unlogin = "showModel(1)"></upload>
     </transition>
   
 

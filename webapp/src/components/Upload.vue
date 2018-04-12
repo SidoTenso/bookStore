@@ -10,10 +10,11 @@
                 作品名称:
               </div>
               <div class="inputbox">
-                  <input type="text" v-model="prodName" name="prodName" min="0" placeholder="您的作品名称" autocomplete="off">
+                  <input type="text" v-model="prodName" @focus="isPNerr = false" name="prodName" min="0" placeholder="您的作品名称" autocomplete="off" required>
               </div>
               <span class="form_unit"></span>
-              <div class="infobox">
+              <div v-if="isPNerr" class="infobox">
+                {{errInfo.prodName}}
               </div>
               <div class="clear"></div>
           </div>
@@ -24,10 +25,11 @@
               <div class="inputbox file_box" @click.capture="file_click">
                   <!-- <input type="" name="prodName" min="0" placeholder="您的作品名称" autocomplete="off"> -->
                   <span>{{fileName}}</span> 
-                  <input type="file" name="photos" id="photos" accept="image/*" @change="file_change" >
+                  <input type="file" name="photos" id="photos" accept="image/*" @change="file_change" required>
               </div>
               <span class="form_unit"></span>
-              <div class="infobox">
+              <div v-if="isPhotoerr" class="infobox">
+                {{errInfo.photos}}
               </div>
               <div class="clear"></div>
           </div>
@@ -36,7 +38,10 @@
               描述:
             </div>
             <div class="inputbox textarea">
-              <textarea v-model="description" name="" id="" cols="30" rows="10"></textarea>
+              <textarea v-model="description" @focus="isDescerr = false" name="" id="" cols="30" rows="10"></textarea>
+            </div>
+            <div v-if="isDescerr" class="infobox">
+              {{errInfo.description}}
             </div>
             <div class="clear"></div>
           </div>
@@ -59,13 +64,22 @@ export default {
       fileName: '点击上传您的文件',
       photos:{},
       prodName: '',
-      description: ''
+      description: '',
+      errInfo: {
+        prodName: '请输入作品名称',
+        photos: '请上传作品',
+        description: '请输入作品描述'
+      },
+      isPNerr: false,
+      isPhotoerr: false,
+      isDescerr: false,
+
     };
   },
   methods: {
     file_click(e){
-      console.log(this);
-      console.log(e.currentTarget,e.target,e);
+      // console.log(this);
+      // console.log(e.currentTarget,e.target,e);
       e.currentTarget.querySelector('input[type="file"]').click()
     },
     file_change(e){
@@ -74,18 +88,36 @@ export default {
         let file = e.target.files[0];
         this.fileName = file.name;
         this.photos = file;
+        this.isPhotoerr = false;
       }
     },
     upload(){
       console.log(this.photos)
-      let formData = new FormData();
-      formData.append('photos',this.photos)
-      formData.append('prodName',this.prodName)
-      formData.append('description',this.description)
-      console.log(formData.get('photos'))
-      this.fetch('formData').post('http://localhost:3000/admin/photos',formData).then(res=>{
-        console.log(res)
-      })
+      if(this.cookies.getCookie('userId')){
+        if(this.prodName == ''){
+          this.isPNerr = true;
+          return;
+        }
+        if(!File.prototype.isPrototypeOf(this.photos)){
+          this.isPhotoerr = true;
+          return;
+        }
+        if(this.description == ''){
+          this.isDescerr = true;
+          return;
+        }
+        let formData = new FormData();
+        formData.append('photos',this.photos)
+        formData.append('prodName',this.prodName)
+        formData.append('description',this.description)
+        console.log(formData.get('photos'))
+        this.fetch('formData').post('http://localhost:3000/admin/photos',formData).then(res=>{
+          console.log(res)
+        })
+      }else{
+        alert('请先登录');
+        this.$emit('unlogin')
+      }
     }
   }
 };
@@ -184,6 +216,14 @@ export default {
 }
 .upload_form .form_box .inputbox.textarea textarea:focus{
   outline: none;
+}
+.upload_form .form_box .infobox{
+    float: left;
+    line-height: 40px;
+    font-size: 14px;
+    color: #ff0000bf;
+    margin-right: 26px;
+    margin-left: 26px;
 }
 .upload_form .form_box .btn{
   float: left;
