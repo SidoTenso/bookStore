@@ -22,6 +22,10 @@ class DbBase {
         return this.model.find(filter,callback)
     }
 
+    getDataById(id,callback){
+        return this.model.findById(id,callback)
+    }
+
     saveData(data,callback){
 
         let model = new this.model(data);

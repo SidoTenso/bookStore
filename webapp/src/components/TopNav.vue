@@ -38,11 +38,11 @@
 
               <!-- 登陆栏 -->
               <td class="login_land">
-                <template v-if="!isLogined">
+                <template v-if="!$root.$data.isLogined">
                   <div class="login" @click="showModel(1)">登录</div>
                   <div class="register"  @click="showModel(2)">注册</div>
                 </template>
-                <template v-if="isLogined">
+                <template v-if="$root.$data.isLogined">
                   <div class="user_box">
                     <div class="username">{{userInfo.userName}}</div>
                   </div>
@@ -88,13 +88,17 @@ export default {
         tit: "登录",
         isRegist: true
       },
-      isLogined: false,
       userInfo: {}
     };
   },
   beforeMount() {
     // 检查是否是登陆状态
     this.checkLogin();
+  },
+  created(){
+    // 各种监听
+    this.addEvent();
+    // console.log(this.$root.$data)
   },
   methods: {
     showModel(type,callback) {
@@ -113,7 +117,8 @@ export default {
     logined(userInfo) {
       if (userInfo !== "cancle") {
         this.userInfo = userInfo;
-        this.isLogined = true;
+        // this.isLogined = true;
+        this.bus.$emit('login',true)
       }
       this.isModelShow = false;
     },
@@ -122,7 +127,8 @@ export default {
       let url = 'http://localhost:3000/admin/getUserInfo'
       if(!userId){
 
-        this.isLogined = false;
+        // this.isLogined = false;
+         this.bus.$emit('login',false)
 
       }else{
         this.fetch().post(url,{
@@ -130,7 +136,8 @@ export default {
         }).then(res=>{
           console.log(res);
           if(res.data.status == 1){
-            this.isLogined = true;
+            // this.isLogined = true;
+             this.bus.$emit('login',true)
             this.userInfo = res.data.userInfo;
           }
         })
@@ -140,7 +147,15 @@ export default {
 
     upload() {
       this.isUploadShow = true;
+    },
+
+    addEvent(){
+      this.bus.$on('showLogin',(type)=>{
+        // console.log(args)
+        this.showModel(type)
+      })
     }
+
   }
 };
 </script>

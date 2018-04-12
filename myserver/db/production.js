@@ -21,6 +21,27 @@ class Production extends dbBase{
     constructor(){
         super(ProdModel);
     }
+
+    saveComment(opts,callback){
+        if(opts.comment && opts.userId){
+            this.model.findById(opts.id).then(photos =>{
+                photos.comments.push({
+                    comment: opts.comment,
+                    observer: opts.userId
+                })
+                console.log(photos)
+                photos.save(err=>{
+                    if(err){
+                        console.log('评论失败')
+                        callback(err)
+                    }else{
+                        callback(null,photos)
+                    }
+                })
+            })
+        }
+
+    }
 }
 
 module.exports = {

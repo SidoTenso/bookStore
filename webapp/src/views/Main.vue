@@ -21,10 +21,12 @@
     </div>
     <!-- 照片列表 -->
     <div class="prod_listbox">
-      <template v-for="(item,index) in photos">
-        <prod-item :key="item._id" :prodInfo="{img:'http://localhost:3000'+item.src,author: item.author.userName,id: item._id}"></prod-item>
-        <div v-if="index%3 == 2" :class="'clear clear'+index" :key="'clear'+index" ></div>
-      </template>
+      <!-- <keep-alive> -->
+        <template v-for="(item,index) in photos">
+          <prod-item :key="item._id" :prodInfo="{img:'http://localhost:3000'+item.src,author: item.author.userName,id: item._id}"></prod-item>
+          <div v-if="index%3 == 2" :class="'clear clear'+index" :key="'clear'+index" ></div>
+        </template>
+      <!-- </keep-alive> -->
     </div>
     <!-- 更多 -->
     <div class="see_more">
@@ -36,84 +38,84 @@
 </template>
 
 <script>
-import ProdItem from '../components/ProdItem'
+import ProdItem from "../components/ProdItem";
 
 export default {
   components: {
     ProdItem
   },
-  data () {
+  data() {
     return {
-      sort: '杂志',
-      prucNname: '作品名称',
-      sort_type: 'popular',
+      sort: "杂志",
+      prucNname: "作品名称",
+      sort_type: "popular",
       photos: []
-    }
+    };
   },
-  created(){
-    this.fetch().post('http://localhost:3000/prod/getphotos').then(res=>{
-      console.log(res)
-      this.photos = res.data.data
-    })
+  created() {
+    this.fetch()
+      .post(this.urls.getPhotos)
+      .then(res => {
+        console.log(res);
+        this.photos = res.data.data;
+      });
   }
-}
+};
 </script>
 
 <style>
-
-.banner{
+.banner {
   width: 100%;
   height: 360px;
 }
-.desc_tit{
+.desc_tit {
   width: 100%;
   text-align: center;
   padding: 20px 0;
   border-bottom: 1px solid #222;
 }
-.desc_tit .sort_sp{
+.desc_tit .sort_sp {
   padding: 6px 10px;
   font-size: 15px;
   color: #bbb;
   background-color: #222;
   border-radius: 5px;
   margin-right: 15px;
-
 }
-.desc_tit span{
+.desc_tit span {
   font-size: 22px;
   color: #ccc;
 }
-.sort_tit{
+.sort_tit {
   width: 100%;
   padding: 40px 0 30px;
   font-size: 19px;
   color: #666;
   text-align: center;
 }
-.sort_tit .sort_item{
+.sort_tit .sort_item {
   display: inline-block;
   margin: 0 20px;
   cursor: pointer;
 }
-.sort_tit .sort_item span{
+.sort_tit .sort_item span {
   padding: 7px 0 10px;
   border-bottom: 1px solid #999;
 }
-.sort_tit .sort_item span.active{
+.sort_tit .sort_item span.active {
   color: #ccc;
 }
-.prod_listbox{
+.prod_listbox {
   width: 100%;
 }
-.prod_listbox::after{
-  content: '';
+.prod_listbox::after {
+  content: "";
   display: block;
-  clear: both; 
+  clear: both;
   width: 100%;
   height: 0;
 }
-.see_more{
+.see_more {
   position: relative;
   bottom: 20px;
   width: 100%;
@@ -122,7 +124,7 @@ export default {
   font-size: 19px;
   text-align: center;
 }
-.see_more a{
+.see_more a {
   /* display: inline-block;
   width: 95px; */
   padding: 0px 5px 10px;
@@ -133,7 +135,7 @@ export default {
   letter-spacing: 2px;
   color: #666;
 }
-.see_more a:hover{
+.see_more a:hover {
   border-bottom: 1px solid #999;
   color: #ccc;
 }

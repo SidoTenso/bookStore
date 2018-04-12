@@ -3,7 +3,7 @@
       <!-- 照片 -->
       <div class="photos_box">
           <!-- <img :src="require('../../static/image/testImg.jpg')" alt=""> -->
-          <img src="../../static/image/testImg.jpg" alt="">
+          <img :src="urls.server+photoInfo.src" alt="">
       </div>
 
       <!-- 评论 -->
@@ -12,24 +12,26 @@
               评论区
           </div>
           <div class="comment_form">
-              <textarea name="" id="" cols="30" rows="10" placeholder="分享您的独特见解吧"></textarea>
-              <div class="comment_btn">
+              <textarea v-model="comment_cont" name="" id="" cols="30" rows="10" placeholder="分享您的独特见解吧"></textarea>
+              <div class="comment_btn" @click="uploadComment">
                   评论
               </div>
           </div>
           <div class="comment_list">
-              <div class="comment_item">
-                  <div class="commenter_img">
-                      <img src="../../static/image/svg/account.svg" alt="">
-                  </div>
-                  <div class="comment_info">
-                      <p class="username">asadfasd</p>
-                      <p class="comment_cont">
-                          dgfasfdfassa
-                      </p>
-                  </div>
-                  <div class="clear"></div>
-              </div>
+              <template v-for="comment in photoInfo.comments">
+                <div class="comment_item" :key="comment._id">
+                    <div class="commenter_img">
+                        <img src="../../static/image/svg/account.svg" alt="">
+                    </div>
+                    <div class="comment_info">
+                        <p class="username">{{comment.observer && comment.observer.userName}}</p>
+                        <p class="comment_cont">
+                            {{comment.comment}}
+                        </p>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+              </template>
           </div>
       </div>
       <!-- 底部栏 -->
@@ -37,13 +39,13 @@
           <div class="btm_l">
               <div class="photo_name">
                   <span>
-                      作品名称
+                      {{photoInfo.prodName || ''}}
                   </span>
                   <span>
                     <img src="../../static/image/1xselected4.png" alt="">
                   </span>
                     <router-link to="/userpage">
-                    作者
+                    {{photoInfo.author && photoInfo.author.userName}}
                     </router-link>
               </div>
           </div>
@@ -62,7 +64,35 @@
 export default {
     data(){
         return {
-
+            id: this.$route.query.id,
+            photoInfo: {},
+            comment_cont: ''
+        }
+    },
+    created(){
+        this.getProdInfo();
+        console.log(this.$route)
+    },
+    methods:{
+        getProdInfo(){
+            this.fetch().post(this.urls.getPhotoInfo,{
+                id: this.id
+            }).then(res=>{
+                console.log(res)
+                this.photoInfo = res.data
+            })
+        },
+        uploadComment(){
+            if(this.comment_cont && this.cookies.getCookie('userId')){
+                this.fetch().post(this.urls.uploadComment,{
+                    comment: this.comment_cont,
+                    id: this.id
+                }).then(res=>{
+                    console.log(res);
+                })
+            }else if(!this.cookies.getCookie('userId')){
+                this.bus.$emit('showLogin',1)
+            }
         }
     }
 }
@@ -88,7 +118,7 @@ export default {
         top: 50%; */
         /* left: 50%; */
         /* margin-left: -25%; */
-        /* width: 100%; */
+        width: 100%;
         /* margin-top: calc(); */
     }
     .comments{

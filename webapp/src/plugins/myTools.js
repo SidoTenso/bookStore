@@ -1,4 +1,7 @@
 import {urlencoded,formData} from '../common/fetch'
+import urls from '../common/urls'
+import Vue from 'vue'
+const bus = new Vue();
 
 module.exports = {
     install: function(Vue,options){
@@ -31,6 +34,11 @@ module.exports = {
                     return urlencoded
             }
         }
+        // 所有的url
+        Vue.prototype.urls = urls,
+
+        // 中间件传递
+        Vue.prototype.bus = bus;
 
 
     }

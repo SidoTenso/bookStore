@@ -15,5 +15,13 @@ Vue.use(myTools);
 /* eslint-disable no-new */
 new Vue({
   router,
-  render: h => h(App)
+  data: {
+    isLogined: false
+  },
+  render: h => h(App),
+  created(){
+    this.bus.$on('login',(status)=>{
+      this.isLogined = status
+    })
+  }
 }).$mount('#app-box')

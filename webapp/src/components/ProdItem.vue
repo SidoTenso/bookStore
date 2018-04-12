@@ -1,6 +1,7 @@
 <template>
   <div class="prod_item">
-      <router-link :to="'/photos?id='+ prodInfo.id">
+      <!-- <router-link :to="{name: 'photos',params:{id:prodInfo.id}}"> -->
+      <router-link :to="'/photos?id=' + prodInfo.id">
         <div class="img_box">
             <img :src="prodInfo.img" alt="">
         </div>
