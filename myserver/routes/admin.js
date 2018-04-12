@@ -1,6 +1,4 @@
 const express = require('express'),
-    // bodyParser = require('body-parser'),
-    // cookieParser = require('cookie-parser'),
     photosHandler = require('../common/photos'),
     app = express.Router(),
     User = require('../db/user').User,
@@ -118,7 +116,7 @@ app.post('/getUserInfo',(req,res)=>{
     console.log(req.body)
     let userId = req.body.userId;
     userdb.getData({_id: userId},(err,data)=>{
-        if(!err){
+        if(!err && data.length!= 0){
             let userInfo = {
                 userName: data[0].userName,
                 activation: data[0].activation,
@@ -134,6 +132,11 @@ app.post('/getUserInfo',(req,res)=>{
                 status: 1,
                 msg: '',
                 userInfo
+            })
+        }else{
+            res.status(200).json({
+                status: 5,
+                msg: '用户不存在'
             })
         }
     })
@@ -154,6 +157,7 @@ app.post('/photos',photosHandler,(req,res)=>{
                     src: '/image/userphotos/default.JPG',
                     attr: 'popular',
                     status: 'pass',
+                    uploadTime: Date.now(),
                     author: data[0]._id
                 }
             

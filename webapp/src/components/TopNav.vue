@@ -63,7 +63,7 @@
 
     <!-- 上传模态框 -->
     <transition name="rubberBand">
-      <upload v-if="isUploadShow" @unlogin = "showModel(1)"></upload>
+      <upload v-if="isUploadShow"  @unlogin = "showModel(1)" @finished="isUploadShow=false"></upload>
     </transition>
   
 
@@ -125,7 +125,7 @@ export default {
         this.isLogined = false;
 
       }else{
-        this.fetch.post(url,{
+        this.fetch().post(url,{
           userId
         }).then(res=>{
           console.log(res);

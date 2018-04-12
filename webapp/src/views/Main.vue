@@ -21,9 +21,9 @@
     </div>
     <!-- 照片列表 -->
     <div class="prod_listbox">
-      <template v-for="n in 11">
-        <prod-item :key="n" :prodInfo="{img:require('../../static/image/test_prod.jpg'),author: '李时珍',id: '233'}"></prod-item>
-        <div v-if="n%3 == 0" class="clear" :key="'clear'+n" ></div>
+      <template v-for="(item,index) in photos">
+        <prod-item :key="item._id" :prodInfo="{img:'http://localhost:3000'+item.src,author: item.author.userName,id: item._id}"></prod-item>
+        <div v-if="index%3 == 2" :class="'clear clear'+index" :key="'clear'+index" ></div>
       </template>
     </div>
     <!-- 更多 -->
@@ -46,8 +46,15 @@ export default {
     return {
       sort: '杂志',
       prucNname: '作品名称',
-      sort_type: 'popular'
+      sort_type: 'popular',
+      photos: []
     }
+  },
+  created(){
+    this.fetch().post('http://localhost:3000/prod/getphotos').then(res=>{
+      console.log(res)
+      this.photos = res.data.data
+    })
   }
 }
 </script>

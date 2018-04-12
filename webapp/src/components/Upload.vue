@@ -61,63 +61,69 @@
 export default {
   data() {
     return {
-      fileName: '点击上传您的文件',
-      photos:{},
-      prodName: '',
-      description: '',
+      fileName: "点击上传您的文件",
+      photos: {},
+      prodName: "",
+      description: "",
       errInfo: {
-        prodName: '请输入作品名称',
-        photos: '请上传作品',
-        description: '请输入作品描述'
+        prodName: "请输入作品名称",
+        photos: "请上传作品",
+        description: "请输入作品描述"
       },
       isPNerr: false,
       isPhotoerr: false,
-      isDescerr: false,
-
+      isDescerr: false
     };
   },
   methods: {
-    file_click(e){
+    file_click(e) {
       // console.log(this);
       // console.log(e.currentTarget,e.target,e);
-      e.currentTarget.querySelector('input[type="file"]').click()
+      e.currentTarget.querySelector('input[type="file"]').click();
     },
-    file_change(e){
+    file_change(e) {
       // console.log(e.target.files)
-      if(e.target.files.length !== 0){
+      if (e.target.files.length !== 0) {
         let file = e.target.files[0];
         this.fileName = file.name;
         this.photos = file;
         this.isPhotoerr = false;
       }
     },
-    upload(){
-      console.log(this.photos)
-      if(this.cookies.getCookie('userId')){
-        if(this.prodName == ''){
+    upload() {
+      console.log(this.photos);
+      if (this.cookies.getCookie("userId")) {
+        if (this.prodName == "") {
           this.isPNerr = true;
           return;
         }
-        if(!File.prototype.isPrototypeOf(this.photos)){
+        if (!File.prototype.isPrototypeOf(this.photos)) {
           this.isPhotoerr = true;
           return;
         }
-        if(this.description == ''){
+        if (this.description == "") {
           this.isDescerr = true;
           return;
         }
         let formData = new FormData();
-        formData.append('photos',this.photos)
-        formData.append('prodName',this.prodName)
-        formData.append('description',this.description)
-        console.log(formData.get('photos'))
-        this.fetch('formData').post('http://localhost:3000/admin/photos',formData).then(res=>{
-          console.log(res)
-        })
-      }else{
-        alert('请先登录');
-        this.$emit('unlogin')
+        formData.append("photos", this.photos);
+        formData.append("prodName", this.prodName);
+        formData.append("description", this.description);
+        console.log(formData.get("photos"));
+        this.fetch("formData")
+          .post("http://localhost:3000/admin/photos", formData)
+          .then(res => {
+            console.log(res);
+            if (res.data.status == 1) {
+              alert("上传成功");
+              this.$emit("finished");
+            }
+          });
+      } else {
+        alert("请先登录");
+        this.$emit("unlogin");
       }
+     
     }
   }
 };
@@ -135,97 +141,100 @@ export default {
   margin-top: -300px;
   background-color: #222;
 }
-.upload_form .tit{
-    font-size: 23px;
-    color: #aaa;
-    width: 800px;
-    margin: 0 auto;
-    line-height: 96px;
+.upload_form .tit {
+  font-size: 23px;
+  color: #aaa;
+  width: 800px;
+  margin: 0 auto;
+  line-height: 96px;
 }
-.upload_form .form_box{
-    box-sizing: border-box;
-    width: 800px;
-    height: 400px;
-    margin: 0 auto;
-    padding-top: 15px;
-    font-size: 16px;
-    color: #aaa;
-    background-color: #282828;
+.upload_form .form_box {
+  box-sizing: border-box;
+  width: 800px;
+  height: 400px;
+  margin: 0 auto;
+  padding-top: 15px;
+  font-size: 16px;
+  color: #aaa;
+  background-color: #282828;
 }
 
-.upload_form .form_box .form_row{
-    margin-bottom: 8px;
-    padding: 0 20px;
+.upload_form .form_box .form_row {
+  margin-bottom: 8px;
+  padding: 0 20px;
 }
-.upload_form .form_box .label{
-    float: left;
-    width: 80px;
-    min-height: 1px;
-    font-size: 16px;
-    color: #aaa;
-    line-height: 38px;
-    text-align: right;
+.upload_form .form_box .label {
+  float: left;
+  width: 80px;
+  min-height: 1px;
+  font-size: 16px;
+  color: #aaa;
+  line-height: 38px;
+  text-align: right;
 }
-.upload_form .form_box .inputbox{
-    float: left;
-    height: 38px;
-    width: 230px;
-    overflow: hidden;
-    margin-left: 30px;
-    padding-left: 20px;
-    padding-right: 10px;
-    border: 1px solid #333;
-    border-radius: 3px;
-    background: linear-gradient(to bottom, rgba(30, 30, 30, 1) 0%, rgba(35, 35, 35, 1) 100% )
+.upload_form .form_box .inputbox {
+  float: left;
+  height: 38px;
+  width: 230px;
+  overflow: hidden;
+  margin-left: 30px;
+  padding-left: 20px;
+  padding-right: 10px;
+  border: 1px solid #333;
+  border-radius: 3px;
+  background: linear-gradient(
+    to bottom,
+    rgba(30, 30, 30, 1) 0%,
+    rgba(35, 35, 35, 1) 100%
+  );
 }
-.upload_form .form_box .inputbox input{
-    line-height: 38px;
-    background: inherit;
-    border: none;
-    color: #aaa;
+.upload_form .form_box .inputbox input {
+  line-height: 38px;
+  background: inherit;
+  border: none;
+  color: #aaa;
 }
-.upload_form .form_box .inputbox input:focus{
-    outline: none;
+.upload_form .form_box .inputbox input:focus {
+  outline: none;
 }
-.upload_form .form_box .inputbox textarea{
+.upload_form .form_box .inputbox textarea {
   height: 100px;
 }
-.upload_form .form_box .inputbox.file_box{
+.upload_form .form_box .inputbox.file_box {
   font-size: 14px;
   color: #666;
   line-height: 38px;
   cursor: pointer;
 }
-.upload_form .form_box .inputbox.textarea{
+.upload_form .form_box .inputbox.textarea {
   height: auto;
 }
-.upload_form .form_box .inputbox.file_box input{
+.upload_form .form_box .inputbox.file_box input {
   display: block;
   width: 0;
   height: 0;
   opacity: 0;
   overflow: hidden;
-
 }
-.upload_form .form_box .inputbox.textarea textarea{
-    line-height: 25px;
-    background: inherit;
-    border: none;
-    color: #999;
-    resize: none;
+.upload_form .form_box .inputbox.textarea textarea {
+  line-height: 25px;
+  background: inherit;
+  border: none;
+  color: #999;
+  resize: none;
 }
-.upload_form .form_box .inputbox.textarea textarea:focus{
+.upload_form .form_box .inputbox.textarea textarea:focus {
   outline: none;
 }
-.upload_form .form_box .infobox{
-    float: left;
-    line-height: 40px;
-    font-size: 14px;
-    color: #ff0000bf;
-    margin-right: 26px;
-    margin-left: 26px;
+.upload_form .form_box .infobox {
+  float: left;
+  line-height: 40px;
+  font-size: 14px;
+  color: #ff0000bf;
+  margin-right: 26px;
+  margin-left: 26px;
 }
-.upload_form .form_box .btn{
+.upload_form .form_box .btn {
   float: left;
   margin-left: 30px;
   width: 80px;
@@ -238,11 +247,10 @@ export default {
   text-align: center;
   user-select: none;
 }
-.upload_form .form_box .btn:active{
+.upload_form .form_box .btn:active {
   background: #515151;
-
 }
-.upload_form .form_box .btn:hover{
+.upload_form .form_box .btn:hover {
   background: #555;
 }
 
