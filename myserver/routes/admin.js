@@ -7,8 +7,14 @@ const express = require('express'),
     prodb = new Production(),
     md5 = str=>require('crypto').createHash('md5').update(str).digest('hex'),
     Mail = require('../db/mail').Mail;
-    maildb = new Mail();
-
+    maildb = new Mail(),
+    Fans = require('../db/fans').Fans;
+    fansdb = new Fans(),
+    Comment = require('../db/comment').Comment,
+    commentdb = new Comment(),
+    Comwall = require('../db/comwall').Comwall,
+    comwalldb = new Comwall();
+    
 // const multer = require('multer'),
 //     upload = multer({dest: '../routes/'})
 
@@ -156,7 +162,7 @@ app.post('/photos',photosHandler,(req,res)=>{
                     likes: 0,
                     src: '/image/userphotos/default.JPG',
                     attr: 'popular',
-                    status: 'pass',
+                    status: 'uncheck',
                     uploadTime: Date.now(),
                     author: data[0]._id
                 }
@@ -187,5 +193,132 @@ app.post('/photos',photosHandler,(req,res)=>{
 
 })
 
+// 用户收藏
+app.post('/collect',(req,res)=>{
+    userdb.getData({_id:req.body.userId},(err,data)=>{
+        if(!err && data.length !== 0 ){
+            if(data[0].collect.indexOf(req.body.photo) == -1){
+                data[0].collect.push(req.body.photo);
+                data[0].save(err=>{
+                    if(!err){
+                        prodb.getDataById(req.body.photo,(proErr,data)=>{
+                            if(!proErr){
+                                data.likes += 1;
+                                data.save();
+                                res.status(200).json({
+                                    status: 1,
+                                    msg: '收藏成功'
+                                })
+
+                            }
+                        })
+                        
+                    }
+                })
+            }else{
+                res.status(200).json({
+                    status: 1,
+                    msg: '已收藏过照片'
+                })
+            }
+        }else{
+            res.status(200).json({
+                status: 5,
+                msg: '收藏失败'
+            })
+        }
+    })
+
+})
+
+// 用户关注
+app.post('/attention',(req,res)=>{
+    fansdb.getData({master:req.body.id,fans: req.body.userId},(err,data)=>{
+        if(!err){
+           if(!data.length){
+                fansdb.saveData({master:req.body.id,fans: req.body.userId},(err)=>{
+                    if(!err){
+                        res.status(200).json({
+                            status:1,
+                            msg: '已关注'
+                        })
+                    }
+                })
+            }else{
+                fansdb.removeData({master:req.body.id,fans: req.body.userId},(err)=>{
+                    if(!err){
+                        res.status(200).json({
+                            status:1,
+                            msg: '关注'
+                        })
+                    }
+                })
+            }
+            console.log(data)
+        }else{
+            console.log(err)
+            res.status(200).json({
+                status:5,
+                msg: '关注失败'
+            })
+        }
+    })
+})
+
+app.post('/getAttentions',(req,res)=>{
+    fansdb.getData({fans: req.body.userId},(err,data)=>{
+        if(!err){
+            let attenArr = data.map(item=>{
+                return item.master
+            })
+            res.status(200).json({
+                status: 1,
+                data: attenArr
+            })
+
+        }
+    })
+})
+app.post('/getfans',(req,res)=>{
+    fansdb.getData({master: req.body.id}).populate('fans','userName _id').then((data)=>{
+            let attenArr = data.map(item=>{
+                return item.fans
+            })
+            res.status(200).json({
+                status: 1,
+                data: attenArr
+            })
+
+    })
+})
+
+
+// 回复评论
+app.post('/recoment',(req,res)=>{
+    if(req.cookies.userId){
+        userdb.getDataById(req.cookies.userId).then(user=>{
+            if(user){
+                commentdb.saveData({
+                    owner_user_id: req.cookies.userId,
+                    target_user_id: req.body.target_id,
+                    content: req.body.content,
+                    created_time: Date.now()
+                },(err,comment)=>{
+                    comwalldb.getDataById(req.body.comwallId).then(comwall=>{
+                        comwall.comments.push(comment._id);
+                        comwall.save(err=>{
+                            if(!err){
+                                res.status(200).json({
+                                    status: 1,
+                                    msg: '保存成功'
+                                })
+                            }
+                        })
+                    })
+                })
+            }
+        })
+    }
+})
 
 module.exports = app;

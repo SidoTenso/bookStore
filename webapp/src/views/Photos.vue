@@ -1,13 +1,18 @@
 <template>
   <div class="content">
+      
+      
       <!-- 照片 -->
       <div class="photos_box">
           <!-- <img :src="require('../../static/image/testImg.jpg')" alt=""> -->
+          <div class="imgbox">
           <img :src="urls.server+photoInfo.src" alt="">
+      </div>
       </div>
 
       <!-- 评论 -->
-      <div class="comments">
+      <div class="comments" v-if="iscommentShow">
+          <div class="com_conent">
           <div class="title">
               评论区
           </div>
@@ -17,23 +22,19 @@
                   评论
               </div>
           </div>
+            <div class="content_listbox">
           <div class="comment_list">
-              <template v-for="comment in photoInfo.comments">
-                <div class="comment_item" :key="comment._id">
-                    <div class="commenter_img">
-                        <img src="../../static/image/svg/account.svg" alt="">
-                    </div>
-                    <div class="comment_info">
-                        <p class="username">{{comment.observer && comment.observer.userName}}</p>
-                        <p class="comment_cont">
-                            {{comment.comment}}
-                        </p>
-                    </div>
-                    <div class="clear"></div>
-                </div>
+              <template v-for="(comment,index) in comments">
+                <comment :comment="comment" :key="'comment'+index"></comment>
               </template>
           </div>
       </div>
+
+          </div>
+      </div>
+
+
+      
       <!-- 底部栏 -->
       <div class="bottom_bar">
           <div class="btm_l">
@@ -44,14 +45,19 @@
                   <span>
                     <img src="../../static/image/1xselected4.png" alt="">
                   </span>
-                    <router-link to="/userpage">
+                    <router-link :to="'/userpage?id='+ (photoInfo.author && photoInfo.author._id)">
                     {{photoInfo.author && photoInfo.author.userName}}
                     </router-link>
+                    <div class="clear"></div>
               </div>
+              <div class="comment_icon" @click="collectPhoto">
+                <div :class="'icon ' + (isCollect?'star-filling': 'star')"></div>
+              </div>
+                  
           </div>
           <div class="btm_r">
               <router-link to="/buy">Buy</router-link>
-              <div class="comment_icon">
+              <div class="comment_icon" @click="iscommentShow=!iscommentShow">
                 <div class="icon comment"></div>
               </div>
           </div>
@@ -61,24 +67,49 @@
   </div>
 </template>
 <script>
+import Comment from '../components/Comment'
 export default {
+    components:{
+        Comment
+    },
     data(){
         return {
             id: this.$route.query.id,
             photoInfo: {},
-            comment_cont: ''
+            iscommentShow: false,
+            isCollect_prive: false,
+            comment_cont: '',
+            comments:[],
         }
     },
     created(){
+        
         this.getProdInfo();
-        console.log(this.$route)
+        this.getComments();
+    },
+    computed:{
+        isCollect:{
+            get(){
+                let userInfo = this.$root.$data.userInfo;
+                let isCollect = false;
+                
+                userInfo.collect && userInfo.collect.forEach(element => {
+                    if(element == this.id){
+                        isCollect = true;
+                    }
+                });
+                this.isCollect_prive = isCollect
+                return this.isCollect_prive;
+            }},
+            setter(value){
+                this.isCollect_prive = value;
+            }
     },
     methods:{
         getProdInfo(){
             this.fetch().post(this.urls.getPhotoInfo,{
                 id: this.id
             }).then(res=>{
-                console.log(res)
                 this.photoInfo = res.data
             })
         },
@@ -93,6 +124,30 @@ export default {
             }else if(!this.cookies.getCookie('userId')){
                 this.bus.$emit('showLogin',1)
             }
+        },
+        collectPhoto(){
+            if(this.cookies.getCookie('userId')){
+                if(!this.isCollect_prive){
+                    this.fetch().post(this.urls.collect,{
+                        userId: this.cookies.getCookie('userId'),
+                        photo: this.id
+                    }).then(res=>{
+                        this.$root.$data.userInfo.collect.push(this.id)
+                        this.isCollect_prive=true;
+                        
+                    })
+                }
+            }else{
+                alert('若想收藏请先登录');
+            }
+        },
+        getComments(){
+            this.fetch().post(this.urls.getComments,{
+                id:this.$route.query.id
+            }).then(res=>{
+                console.log(res)
+                this.comments = res.data.data
+            })
         }
     }
 }
@@ -108,9 +163,15 @@ export default {
     .photos_box{
         position: relative;
         display: table-cell;
-        width: calc(100% - 500px);
-        height: 100%;
+        /* width: calc(100% - 400px); */
+        /* width: 5000px; */
+        height: calc(100vh - 115px);
         vertical-align: middle;
+        text-align: center;
+    }
+    .photos_box .imgbox{
+        /* min-width: 5100px; */
+        padding: 0 120px;
         text-align: center;
     }
     .photos_box img{
@@ -122,19 +183,26 @@ export default {
         /* margin-top: calc(); */
     }
     .comments{
-        /* float: left; */
+        /* float: right; */
         display: table-cell;
         box-sizing: border-box;
         padding-left: 20px;
         padding-right: 20px;
-        width: 500px;
+        width: 400px;
+        max-width: 400px;
         height: 100%;
         background: linear-gradient(to bottom, rgba(15,15,15,1) 0%,rgba(1,1,1,1) 100%);
+        overflow: hidden;
     }
-    .comments .title{
+    .comments .com_conent{
+        /* color: inherit; */
+        height: calc(100vh - 115px);
+    }
+    .comments .com_conent .title{
         font-size: 20px;
         color: #aaa;
-        margin: 20px 0;
+        /* margin: 20px 0; */
+        padding: 20px 0;
     }
     .comments .comment_form textarea{
         box-sizing: border-box;
@@ -174,28 +242,23 @@ export default {
     .comments  .comment_form{
         margin-bottom: 15px;
     }
-    .comments .comment_item{
-        margin-bottom: 15px;
+
+    .comments .content_listbox{
+        height: calc(100% - 202px);
+        overflow: hidden;
+
     }
-    .comments .comment_item .commenter_img {
-        float: left;
-        width: 30px;
-        height: 30px;
-        margin-right: 13px;
-    }
-    .comments img{
-        width: 100%;
+    .comments .comment_list{
         height: 100%;
+        width: 390px;
+        padding-right: 30px;
+        overflow-y: scroll;
+        padding-bottom: 10px;
     }
-    .comments .comment_item .comment_info{
-        float: left;
-        width: calc(100% - 43px);
-        color: #888;
-    }
-    .comments .comment_item .comment_info p{
-        font-size: 14px;
-        line-height: 18px;
-    }
+    
+    
+    
+    
     
     .bottom_bar{
         box-sizing: border-box;
@@ -216,6 +279,9 @@ export default {
     .bottom_bar .btm_r{
         float: right;
     }
+    .bottom_bar .photo_name{
+        float: left;
+    }
     .bottom_bar .photo_name span{
         border-right: 1px solid rgba(0,0,0, 0.1);
     }
@@ -235,6 +301,26 @@ export default {
         position: relative;
         top: -6px;
         height: 50px;
+    }
+    .bottom_bar .btm_l .comment_icon{
+        float: left;
+        padding: 0 15px;
+        border-right: 1px solid rgba(0,0,0, 0.1);
+    }
+    .bottom_bar .btm_l .icon{
+        height: 50px;
+        color: #ddd;
+        width: 30px;
+        background-size: 25px;
+        cursor: pointer;
+    }
+    .bottom_bar .btm_l .icon.star{
+        background: url("../../static/image/svg/favorite.svg") no-repeat center;
+        background-size: 25px;
+    }
+    .bottom_bar .btm_l .icon.star-filling{
+        background: url("../../static/image/svg/favorites-filling.svg") no-repeat center;
+        background-size: 25px;
     }
     .bottom_bar .btm_r a{
         vertical-align: middle;

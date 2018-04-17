@@ -9,10 +9,7 @@ const prodSchema = mongoose.Schema({
     status: String,
     uploadTime: Number,
     author: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
-    comments:[{
-        comment: String,
-        observer:{type: mongoose.Schema.Types.ObjectId,ref: 'user'}
-    }]
+    comments: [{type: Schema.Types.ObjectId,ref: 'comwall'}]
 })
 
 const ProdModel = mongoose.model('production',prodSchema);

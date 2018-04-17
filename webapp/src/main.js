@@ -5,6 +5,7 @@ import FastClick from 'fastclick'
 import App from './App'
 import router from './router/index'
 import myTools from './plugins/myTools'
+import { userInfo } from 'os';
 
 
 FastClick.attach(document.body)
@@ -16,12 +17,32 @@ Vue.use(myTools);
 new Vue({
   router,
   data: {
-    isLogined: false
+    isLogined: false,
+    userInfo: {},
+    attentions: []
   },
   render: h => h(App),
   created(){
     this.bus.$on('login',(status)=>{
       this.isLogined = status
     })
+    this.bus.$on('setUserInfo',(userInfo)=>{
+      this.userInfo = userInfo;
+      this.getAttentions();
+    })
+    this.bus.$on('getAttentions',()=>{
+      this.getAttentions();
+    })
+    
+  },
+  methods:{
+    getAttentions(){
+      this.fetch().post(this.urls.getAttentions,{
+        userId: this.userInfo._id
+      }).then(res=>{
+        console.log(res)
+        this.attentions = res.data.data
+      })
+    }
   }
 }).$mount('#app-box')

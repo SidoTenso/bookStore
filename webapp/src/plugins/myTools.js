@@ -40,6 +40,17 @@ module.exports = {
         // 中间件传递
         Vue.prototype.bus = bus;
 
+        // 常用函数
+        Vue.prototype.tools={
+            chunkArr(arr,size){
+                let length = Math.ceil(arr.length / size);
+                return Array.from({length}).map((item,index)=>{
+                    return arr.slice(index*size,(index+1)*size)
+                })
+
+            }
+        }
+
 
     }
 }

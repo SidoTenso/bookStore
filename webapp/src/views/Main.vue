@@ -10,27 +10,27 @@
     <!-- 照片分类 -->
     <div class="sort_tit">
       <div class="sort_item">
-        <span :class="{active: sort_type == 'popular'}">流行</span>
+        <span :class="{active: sort_type == 'popular'}" @click="sortPhotos(1)">流行</span>
       </div>
       <div class="sort_item">
-        <span :class="{active: sort_type == 'lasted'}">最新</span>
+        <span :class="{active: sort_type == 'lasted'}" @click="sortPhotos(2)">最新</span>
       </div>
       <div class="sort_item">
-        <span :class="{active: sort_type == 'awarded'}">获奖</span>
+        <span :class="{active: sort_type == 'awarded'}" @click="sortPhotos(3)">热议</span>
       </div>
     </div>
     <!-- 照片列表 -->
     <div class="prod_listbox">
       <!-- <keep-alive> -->
         <template v-for="(item,index) in photos">
-          <prod-item :key="item._id" :prodInfo="{img:'http://localhost:3000'+item.src,author: item.author.userName,id: item._id}"></prod-item>
+          <prod-item :key="item._id" :prodInfo="{img:'http://localhost:3000'+item.src,author: item.author,id: item._id}"></prod-item>
           <div v-if="index%3 == 2" :class="'clear clear'+index" :key="'clear'+index" ></div>
         </template>
       <!-- </keep-alive> -->
     </div>
     <!-- 更多 -->
     <div class="see_more">
-      <router-link to="/more">
+      <router-link to="/photoList">
         更多图片
       </router-link>
     </div>
@@ -54,11 +54,48 @@ export default {
   },
   created() {
     this.fetch()
-      .post(this.urls.getPhotos)
+      .post(this.urls.getPhotos+ '?limit=21')
       .then(res => {
         console.log(res);
         this.photos = res.data.data;
+        this.sortPhotos(1);
       });
+  },
+  methods:{
+    sortPhotos(type){
+      console.log(type)
+      this.photos.sort((a,b)=>{
+        switch (type) {
+          case 1:
+            this.sort_type = 'popular';
+            if(b.likes - a.likes == 0){
+              return b.uploadTime - a.uploadTime
+            }else{
+              return b.likes - a.likes
+            }
+            break;
+          case 2:
+            this.sort_type = 'lasted';
+            if(a.uploadTime){
+              return b.uploadTime - a.uploadTime;
+            }else{
+              return false;
+            }
+            break;
+          case 3:
+            this.sort_type = 'awarded'
+            if(a.comments){
+              return b.comments.length - a.comments.length;
+            }else{
+              return false;
+            }
+            break;
+        
+          default:
+            break;
+        }
+      })
+    }
   }
 };
 </script>

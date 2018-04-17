@@ -10,6 +10,7 @@ const userSchema = Schema({
     fans: [{type: Schema.Types.ObjectId, ref: 'user'}],
     attentions: [{type: Schema.Types.ObjectId, ref: 'user'}],
     collect: [{type: Schema.Types.ObjectId, ref: 'production'}],
+    comments: [{type: Schema.Types.ObjectId,ref: 'comwall'}],
     activation: {type: Boolean, default: false}
 })
 

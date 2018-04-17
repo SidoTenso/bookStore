@@ -2,5 +2,14 @@ export default {
     "server": "http://localhost:3000",
     "getPhotoInfo": "http://localhost:3000/prod/getPhotoInfo",
     "getPhotos": "http://localhost:3000/prod/getphotos",
-    "uploadComment": "http://localhost:3000/prod/uploadComment"
+    "uploadComment": "http://localhost:3000/prod/uploadComment",
+    "getphotosById": "http://localhost:3000/prod/getphotosById",
+    "collect": "http://localhost:3000/admin/collect",
+    "getCollect": "http://localhost:3000/prod/getCollects",
+    "attention": "http://localhost:3000/admin/attention",
+    "getAttentions": "http://localhost:3000/admin/getAttentions",
+    "getfans": "http://localhost:3000/admin/getfans",
+    "getUserInfo": "http://localhost:3000/admin/getUserInfo",
+    "getComments": "http://localhost:3000/prod/getComments",
+    "recoment": "http://localhost:3000/admin/recoment",
 }

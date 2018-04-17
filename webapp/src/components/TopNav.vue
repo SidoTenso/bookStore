@@ -4,7 +4,9 @@
       <tr>
 
         <td class="logo">
-          <img src="@/../static/image/1xlogo.png" alt="">
+          <router-link to="/">
+            <img src="@/../static/image/1xlogo.png" alt="">
+          </router-link>
         </td>
         <td class="nav_r">
           <table>
@@ -13,19 +15,27 @@
               <td class="fun_list">
                 <ul>
                   <li class="list_item">
+                    <router-link to="/photoList">
                     照片
+                    </router-link>
                   </li>
                   <li class="list_item">
-                    版画
+                    <router-link  to="/pic">
+                      版画
+                    </router-link>
                   </li>
                   <li class="list_item" @click="upload">
                     上传
                   </li>
                   <li class="list_item">
-                    杂志
+                    <router-link to="/magin">
+                      杂志
+                    </router-link>
                   </li>
                   <li class="list_item">
-                    图书
+                    <router-link to="/books">
+                      图书
+                    </router-link>
                   </li>
                 </ul>
               </td>
@@ -121,6 +131,7 @@ export default {
         this.bus.$emit('login',true)
       }
       this.isModelShow = false;
+      this.checkLogin();
     },
     checkLogin() {
       let userId = this.cookies.getCookie('userId');
@@ -139,6 +150,7 @@ export default {
             // this.isLogined = true;
              this.bus.$emit('login',true)
             this.userInfo = res.data.userInfo;
+             this.bus.$emit('setUserInfo',this.userInfo)
           }
         })
         // return this.log
@@ -213,6 +225,9 @@ export default {
   color: #888;
   font-size: 16px;
   cursor: pointer;
+}
+.nav_box .fun_list ul li a{
+  color: #888;
 }
 
 /* 搜索框  */

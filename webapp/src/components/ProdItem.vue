@@ -2,11 +2,16 @@
   <div class="prod_item">
       <!-- <router-link :to="{name: 'photos',params:{id:prodInfo.id}}"> -->
       <router-link :to="'/photos?id=' + prodInfo.id">
-        <div class="img_box">
+        <div class="img_table">
+          <div class="img_box">
             <img :src="prodInfo.img" alt="">
+          </div>
         </div>
         <div class="prod_info">
-            © {{prodInfo.author}}
+          <router-link :to="'/userpage?id='+ (prodInfo.author && prodInfo.author._id)">
+            © {{prodInfo.author && prodInfo.author.userName}}
+          </router-link>
+            
         </div>
       </router-link>
   </div>
@@ -32,11 +37,25 @@ export default {
 }
 .prod_item img{
     width: 100%;
+    max-width: 339px;
+    max-height: 177px;
 }
 .prod_info{
     padding: 10px 0px 0px 0px;
     font-size: 13px;
     color: #555;
 }
+.prod_info a{
+  color: #555;
+}
+.prod_item .img_table{
+  display: table;
+  height: 180px;
+}
+.prod_item .img_box{
+  display: table-cell;
+  vertical-align: middle;
+}
+
 </style>
 
