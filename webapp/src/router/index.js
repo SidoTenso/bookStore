@@ -6,6 +6,7 @@ import Main from '@/views/Main'
 import Photos from '@/views/Photos'
 import UserPage from '@/views/UserPage'
 import photoList from '@/views/photoList'
+import Books from '@/views/Books'
 
 Vue.use(Router)
 
@@ -30,6 +31,11 @@ export default new Router({
       path: '/photoList',
       name: 'photoList',
       component: photoList
+    },
+    {
+      path: '/books',
+      name: 'books',
+      component: Books
     }
     // {
     //   path: '/login',
