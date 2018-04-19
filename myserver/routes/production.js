@@ -100,7 +100,8 @@ app.post('/uploadComment',(req,res)=>{
 // 获取评论列表
 app.post('/getComments',(req,res)=>{
     if(req.body.id){
-        prodb.getDataById(req.body.id).populate({
+        let db = req.body.type == 'user'? userdb : prodb
+        db.getDataById(req.body.id).populate({
             path: 'comments',
             model: 'comwall',
             populate:{

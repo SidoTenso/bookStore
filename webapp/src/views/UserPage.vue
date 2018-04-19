@@ -17,7 +17,7 @@
                 </div>
             </div>
             <div class="userTags">
-                <div class="tag">2010年</div>
+                <div class="tag">{{getYear(userInfo.creat_time)+'年'}}</div>
             </div>
             <div class="clear"></div>
         </div>
@@ -67,14 +67,24 @@
                     </div>
 
                     <!-- 留言 -->
-                    <div class="comment_box">
+                    <div v-if="pageType == 'comment'" class="comment_box">
+                        <div class="tit">留言</div>
                         <div class="com_area">
-                            <textarea></textarea>
+                            <textarea v-model="comment_cont" placeholder="在这里写下留言"></textarea>
                         </div>
-                        <div class="comment_btn">发表</div>
+                        <div class="comment_btn" @click="uploadComment">发表</div>
                         <div class="cont_box">
-                            
+                            <template v-for="(comment,index) in comments">
+                                <comment :comment="comment" @commentSuccess="getComments" :key="'comment'+index"></comment>
+                            </template>
                         </div>
+                    </div>
+                    <!-- 个人信息 -->
+                    <div v-if="pageType == 'info'" class="personalInfo">
+                        <div class="tit">
+                            关于
+                        </div>
+                        {{userInfo.personalInfo|| '暂无该up主信息'}}
                     </div>
                     
                     
@@ -88,29 +98,30 @@
 
 <script>
 import Fans from'../components/Fans'
+import Comment from "../components/Comment"
 export default {
   components:{
-    Fans
+    Fans,
+    Comment
   },
   data() {
     return {
         userInfo:{},
         photos: [],
         collects:[],
+        comments:[],
         fans:[],
         pageType: 'photos',
         pageTypes: ['photos','collect','fans','comment','info'],
         AnimateType: 'inTop',
         isAttention: false,
         showFans: false,
-        attentionMsg_priv: '关注'
+        attentionMsg_priv: '关注',
+        comment_cont: ''
     };
   },
   created() {
-    this.getInfo();
-    this.getPhotos();
-    this.getCollects();
-    this.getFans();
+    this.init();
   },
   beforeMount(){
 
@@ -136,16 +147,40 @@ export default {
           set(value){
               this.attentionMsg_priv = value
           }
+      },
+      
+  },
+  watch:{
+      $route(){
+          this.init();
+          this.closeFans();
       }
   },
   methods: {
+      init(){
+          this.getInfo();
+          this.getPhotos();
+          this.getCollects();
+          this.getFans();
+          this.getComments();
+      },
       getInfo(){
           this.fetch().post(this.urls.getUserInfo ,{
               userId: this.$route.query.id
           }).then(res=>{
               console.log(res)
-            this.userInfo = res.data.userInfo
+              if(res.data.status == 1){
+
+                  this.userInfo = res.data.userInfo
+              }
           })
+      },
+      getYear(date){
+          if(date){
+              return (new Date(date)).getFullYear();
+          }else{
+              return 2018
+          }
       },
       getPhotos(){
           this.fetch().post(this.urls.getphotosById,{
@@ -207,6 +242,30 @@ export default {
       },
       closeFans(){
         this.showFans = false;
+      },
+      uploadComment(){
+          if(this.cookies.getCookie('userId')){
+              this.fetch().post(this.urls.usercomment,{
+                  comment: this.comment_cont,
+                  id: this.$route.query.id,
+              }).then(res=>{
+                //   console.log(res)
+                this.getComments();
+              })
+          }else{
+              alert('请先登录')
+          }
+      },
+      getComments(){
+          this.fetch().post(this.urls.getComments,{
+                  id: this.$route.query.id,
+                  type: 'user'
+              }).then(res=>{
+                  console.log(res)
+                  if(res.data.status == 1){
+                      this.comments = res.data.data
+                  }
+              })
       }
       
   }
@@ -367,6 +426,58 @@ export default {
 .main_cont .content_box .photo_row .photo_item img{
     max-width: 270px;
     max-height: 230px;
+}
+.comment_box{
+    width: 650px;
+    margin: 0 auto;
+}
+.comment_box .tit{
+    font-size: 20px;
+    line-height: 50px;
+    color: #aaa;
+    text-align: center;
+}
+.comment_box .com_area{
+    width: 650px;
+    height: 65px;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    border: 1px solid #181818;
+    background-color: #141414;
+
+}
+.comment_box .com_area textarea{
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    color: #999;
+    background-color: #141414;
+    resize: none;
+}
+.comment_box .comment_btn{
+    width: 65px;
+    height: 30px;
+    margin-top: 15px;
+    text-align: center;
+    color: #999;
+    background-color: #202020;
+    border-radius: 5px;
+}
+.comment_box .cont_box{
+    margin-top: 25px;
+}
+.personalInfo{
+    width: 1200px;
+    margin: 25px auto 0;
+    font-size: 16px;
+    color: #888;
+}
+.personalInfo .tit{
+    font-size: 22px;
+    font-weight: bold;
+    color: #999;
+    margin-bottom: 20px;
 }
 
 .inTop-enter-active{

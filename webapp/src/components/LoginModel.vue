@@ -75,7 +75,8 @@ export default {
           {
             userName: this.userName,
             email: this.email,
-            psw: this.psw
+            psw: this.psw,
+            create_time: Date.now()
           })
         .then(res => {
           // console.log(res);

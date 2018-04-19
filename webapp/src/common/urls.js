@@ -12,4 +12,5 @@ export default {
     "getUserInfo": "http://localhost:3000/admin/getUserInfo",
     "getComments": "http://localhost:3000/prod/getComments",
     "recoment": "http://localhost:3000/admin/recoment",
+    "usercomment": "http://localhost:3000/admin/comment",
 }

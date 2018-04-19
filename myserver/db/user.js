@@ -6,12 +6,14 @@ const userSchema = Schema({
     userName: String,
     email: String,
     psw: String,
+    create_time: Number,
     productions: [{type: Schema.Types.ObjectId, ref: 'production'}],
     fans: [{type: Schema.Types.ObjectId, ref: 'user'}],
     attentions: [{type: Schema.Types.ObjectId, ref: 'user'}],
     collect: [{type: Schema.Types.ObjectId, ref: 'production'}],
     comments: [{type: Schema.Types.ObjectId,ref: 'comwall'}],
-    activation: {type: Boolean, default: false}
+    activation: {type: Boolean, default: false},
+    personalInfo: {type: String, default: '暂无该up主信息'}
 })
 
 const UserModel = mongoose.model('user',userSchema);

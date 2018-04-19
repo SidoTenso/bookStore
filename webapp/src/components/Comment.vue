@@ -22,7 +22,7 @@
                     <p class="username">{{recom.owner_user_id && recom.owner_user_id.userName}}</p>
                     <p class="comment_cont">
                         {{recom.content}}
-                        <span class="recomment" @click="showInput()">回复</span>
+                        <span class="recomment" @click="showInput(recom.owner_user_id._id)">回复</span>
                     </p>
                 </div>
                 <div class="clear"></div>
@@ -64,8 +64,11 @@ export default {
                 content: this.comentCont
             }).then(res=>{
                 console.log(res)
-                
+                if(res.data.status == 1){
+                    this.$emit('commentSuccess')
+                }
             })
+            this.comentCont = '';
         }
     }
 }

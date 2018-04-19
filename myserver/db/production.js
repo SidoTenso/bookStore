@@ -8,6 +8,7 @@ const prodSchema = mongoose.Schema({
     attr: String,
     status: String,
     uploadTime: Number,
+    description: String,
     author: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
     comments: [{type: Schema.Types.ObjectId,ref: 'comwall'}]
 })

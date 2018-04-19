@@ -5,7 +5,7 @@
             关注
         </div>
         <div v-for="(fan,index) in pageFans" :key="index" class="fans_item">
-                <router-link :to="'/userPage?id='+fan._id">
+                <router-link :to="'/userpage?id='+fan._id">
                     <div class="fans_img">
                         <img src="../../static/image/svg/account.svg" alt="">
                     </div>

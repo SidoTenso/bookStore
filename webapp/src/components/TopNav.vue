@@ -54,7 +54,9 @@
                 </template>
                 <template v-if="$root.$data.isLogined">
                   <div class="user_box">
-                    <div class="username">{{userInfo.userName}}</div>
+                    <div class="username">
+                      {{userInfo.userName}}
+                    </div>
                   </div>
                 </template>
                 <div class="clear"></div>
@@ -75,6 +77,8 @@
     <transition name="rubberBand">
       <upload v-if="isUploadShow"  @unlogin = "showModel(1)" @finished="isUploadShow=false"></upload>
     </transition>
+
+    <!-- 搜索模态框 -->
   
 
   </nav>
@@ -109,6 +113,16 @@ export default {
     // 各种监听
     this.addEvent();
     // console.log(this.$root.$data)
+  },
+  watch:{
+    isUploadShow(){
+      if(this.isUploadShow){
+        document.body.style.overflow = 'hidden';
+      }else{
+        document.body.style.overflow = 'scroll';
+
+      }
+    }
   },
   methods: {
     showModel(type,callback) {
@@ -261,10 +275,14 @@ export default {
   cursor: pointer;
 }
 .login_land .user_box {
-  width: 100%;
+  float: right;
+  /* width: 100%; */
+  padding: 0 15px;
+  cursor: pointer;
   height: 100%;
 }
 .login_land .user_box .username {
+  /* padding: 0 15px; */
   text-align: right;
 }
 </style>

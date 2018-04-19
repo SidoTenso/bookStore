@@ -104,9 +104,17 @@ app.get('/activation',(req,res)=>{
             }else{
                 maildb.removeData({value:req.query.key},(removeErr)=>{
                     if(!removeErr){
-                        userdb.updateData({email: data[0].email},{activation:true},(err,data)=>{
-                            console.log(data)
-                            res.send('激活成功')
+                        userdb.getData({email: data[0].email},(err,user)=>{
+                            if(!err){
+                                console.log(user,22222)
+                                // res.send('激活成功')
+                                user[0].activation = true;
+                                user[0].save(err=>{
+                                    res.cookie('userId',String(user[0]._id))
+                                    res.redirect('http://localhost:8080/')
+                                })
+
+                            }
                         })
                     }else{
                         res.send('激活失败')
@@ -304,6 +312,7 @@ app.post('/recoment',(req,res)=>{
                     content: req.body.content,
                     created_time: Date.now()
                 },(err,comment)=>{
+                    console.log(111111,comment)
                     comwalldb.getDataById(req.body.comwallId).then(comwall=>{
                         comwall.comments.push(comment._id);
                         comwall.save(err=>{
@@ -320,5 +329,39 @@ app.post('/recoment',(req,res)=>{
         })
     }
 })
+
+// 用户留言
+app.post('/comment',(req,res)=>{
+    if(req.body.comment && req.cookies.userId){
+        let content = req.body.comment,
+        id = req.body.id,
+        user = req.cookies.userId;
+        userdb.getDataById(user,(err,data)=>{
+            if(!err && data){
+                let created_time = Date.now();
+                comwalldb.saveData({content,user,created_time },(err,data)=>{
+                    if(!err){
+                        userdb.getDataById(id,(err,useritem)=>{
+                            if(!err){
+                                useritem.comments.push(data._id);
+                                useritem.save(err=>{
+                                    if(!err){
+                                        res.status(200).json({
+                                            status: 1,
+                                            msg:'留言成功'
+                                        })
+                                    }
+                                })
+                            }
+                        })
+                        
+                    }
+                })
+            }
+        })
+    }
+})
+
+
 
 module.exports = app;

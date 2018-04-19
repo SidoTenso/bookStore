@@ -35,6 +35,27 @@
           </div>
           <div class="form_row">
             <div class="label justify">
+              类别:
+            </div>
+            <div class="optbox" tabindex="1" @blur="selectShow = false">
+              <div class="inputbox selector" @click="selectShow = !selectShow">
+                <div class="selected">{{attrtext}}</div>
+              </div>
+              <div class="options" v-if="selectShow">
+                <div class="overbox">
+                  <div class="overcontbox">
+                    <div v-for="(value,key,index) in attrs" @click="changeAttr(key)" :key="'option'+index" class="option_item">{{value}}</div>
+
+                  </div>
+
+                </div>
+              </div>
+              <div class="clear"></div>
+            </div>
+            <div class="clear"></div>
+          </div>
+          <div class="form_row">
+            <div class="label justify">
               描述:
             </div>
             <div class="inputbox textarea">
@@ -53,11 +74,15 @@
           </div>
         </form>
       </div> 
+      <div class="close_btn" @click="finished">
+
+      </div>
 
   </div>
 </template>
 
 <script>
+import photoAttrs from '../common/photoAttrs'
 export default {
   data() {
     return {
@@ -65,6 +90,9 @@ export default {
       photos: {},
       prodName: "",
       description: "",
+      attrs: photoAttrs,
+      attrtext: '请选择',
+      attrType: 'else',
       errInfo: {
         prodName: "请输入作品名称",
         photos: "请上传作品",
@@ -72,6 +100,7 @@ export default {
       },
       isPNerr: false,
       isPhotoerr: false,
+      selectShow: false,
       isDescerr: false
     };
   },
@@ -105,10 +134,15 @@ export default {
           this.isDescerr = true;
           return;
         }
+        if(!this.$root.$data.userInfo.activation){
+          alert('请登录邮箱激活账号')
+          return;
+        }
         let formData = new FormData();
         formData.append("photos", this.photos);
         formData.append("prodName", this.prodName);
         formData.append("description", this.description);
+        formData.append("attr", this.attrType);
         console.log(formData.get("photos"));
         this.fetch("formData")
           .post("http://localhost:3000/admin/photos", formData)
@@ -124,6 +158,15 @@ export default {
         this.$emit("unlogin");
       }
      
+    },
+    finished(){
+      this.$emit("finished")
+    },
+    changeAttr(value){
+      this.attrType = value;
+      this.attrtext = this.attrs[value];
+      // console.log(this.attrs[value],this.attrs,value)
+      this.selectShow = false;
     }
   }
 };
@@ -140,6 +183,16 @@ export default {
   margin-left: -500px;
   margin-top: -300px;
   background-color: #222;
+}
+.upload_form .close_btn{
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  top: 15px;
+  right: 15px;
+  background: url(../../static/image/svg/close.svg) center;
+  background-size: contain;
+  cursor: pointer;
 }
 .upload_form .tit {
   font-size: 23px;
@@ -205,6 +258,65 @@ export default {
   color: #666;
   line-height: 38px;
   cursor: pointer;
+}
+.upload_form .form_box .inputbox.selector{
+  position: relative;
+  border-left-color: rgba(51, 51, 51, 0.2);
+  border-right-color: rgba(51, 51, 51, 0.2);
+  cursor: pointer;
+  margin-left: 0;
+  font-size: 14px;
+  
+}
+.upload_form .form_box .inputbox.selector::after{
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  right: 10px;
+  top: 15px;
+  background-color: #fff;
+}
+.upload_form .form_box .inputbox.selector .selected{
+  color: #999;
+  line-height: 38px;
+}
+.upload_form .form_box .optbox{
+  position: relative;
+  float: left;
+  outline: none;
+  margin-left: 30px;
+}
+.upload_form .form_box .options{
+  position: absolute;
+  box-sizing: border-box;
+  width: 262px;
+  height: 230px;
+  top: 40px;
+  left: 0px;
+  padding: 0 20px;
+  background: #1f1f1f;
+  border-left: 1px solid #333;
+  border-right: 1px solid #333;
+  cursor: pointer;
+  font-size: 14px;
+}
+.upload_form .form_box .options .option_item{
+  width: 100%;
+  padding: 15px 0;
+  border-bottom: 1px solid #282828;
+  
+}
+.overbox{
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+.overbox .overcontbox{
+  width: 100%;
+  height: 100%;
+  padding-right: 20px;
+  overflow-y: scroll;
 }
 .upload_form .form_box .inputbox.textarea {
   height: auto;

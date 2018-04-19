@@ -25,7 +25,7 @@
             <div class="content_listbox">
           <div class="comment_list">
               <template v-for="(comment,index) in comments">
-                <comment :comment="comment" :key="'comment'+index"></comment>
+                <comment :comment="comment" @commentSuccess="getComments" :key="'comment'+index"></comment>
               </template>
           </div>
       </div>
@@ -120,7 +120,11 @@ export default {
                     id: this.id
                 }).then(res=>{
                     console.log(res);
+                    if(res.data.status == 1){
+                        this.getComments();
+                    }
                 })
+                this.comment_cont = '';
             }else if(!this.cookies.getCookie('userId')){
                 this.bus.$emit('showLogin',1)
             }
@@ -146,7 +150,9 @@ export default {
                 id:this.$route.query.id
             }).then(res=>{
                 console.log(res)
-                this.comments = res.data.data
+                this.comments = res.data.data.sort((a,b)=>{
+                    return b.created_time - a.created_time
+                })
             })
         }
     }
@@ -179,7 +185,9 @@ export default {
         top: 50%; */
         /* left: 50%; */
         /* margin-left: -25%; */
-        width: 100%;
+        /* width: 100%; */
+        max-width: 650px;
+        max-height: 380px;
         /* margin-top: calc(); */
     }
     .comments{
