@@ -183,6 +183,7 @@ export default {
   margin-left: -500px;
   margin-top: -300px;
   background-color: #222;
+  z-index: 51;
 }
 .upload_form .close_btn{
   position: absolute;

@@ -363,5 +363,23 @@ app.post('/comment',(req,res)=>{
 })
 
 
+// 获取搜索结果
+app.post('/getSearch',(req,res)=>{
+    let result = {}
+    prodb.getData({status:'pass',prodName: new RegExp(req.body.searchkey,'i')},{_id:1,prodName:1,src:1})
+        .then(photos=>{
+            result.photos = photos;
+            userdb.getData({userName: new RegExp(req.body.searchkey,'i')},{_id:1,userName:1})
+                .then(user=>{
+                    result.authors = user
+                    res.status(200).json({
+                        status: 1,
+                        data: result
+                    })
+                })
+        })
+})
+
+
 
 module.exports = app;

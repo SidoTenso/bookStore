@@ -40,9 +40,12 @@
                 </ul>
               </td>
               <!-- 搜索栏 -->
-              <td class="search_box">
-                <div class="search logo">
-
+              <td class="search_box"> 
+                <div class="search_input">
+                  <div class="search logo">
+                  </div>
+                  <input type="text" @focus="isSearchShow = true" v-model="searchkey">
+                  <div class="clear"></div>
                 </div>
               </td>
 
@@ -79,7 +82,9 @@
     </transition>
 
     <!-- 搜索模态框 -->
-  
+    <transition name="slideFromTop">
+      <search-model :searchkey = 'searchkey' v-if="isSearchShow" @finished="isSearchShow = false,searchkey = ''"></search-model>
+    </transition>
 
   </nav>
 </template>
@@ -87,22 +92,26 @@
 <script>
 import LoginModel from "@/components/LoginModel";
 import Upload from "@/components/Upload.vue";
+import SearchModel from '@/components/SearchModel'
 import { fail } from "assert";
 export default {
   components: {
     LoginModel,
-    Upload
+    Upload,
+    SearchModel
   },
   name: "HelloWorld",
   data() {
     return {
       isModelShow: false,
       isUploadShow: false,
+      isSearchShow: false,
       modelConfig: {
         tit: "登录",
         isRegist: true
       },
-      userInfo: {}
+      userInfo: {},
+      searchkey:''
     };
   },
   beforeMount() {
@@ -117,9 +126,9 @@ export default {
   watch:{
     isUploadShow(){
       if(this.isUploadShow){
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflowY = 'hidden';
       }else{
-        document.body.style.overflow = 'scroll';
+        document.body.style.overflowY = 'scroll';
 
       }
     }
@@ -138,6 +147,7 @@ export default {
           break;
       }
     },
+    
     logined(userInfo) {
       if (userInfo !== "cancle") {
         this.userInfo = userInfo;
@@ -195,15 +205,19 @@ export default {
   left: 0;
   width: 100%;
   height: 65px;
-  padding: 0 40px;
   overflow: hidden;
   background-color: #000;
   z-index: 1000;
 }
 .nav_box > table {
+  position: relative;
+  box-sizing: border-box;
+  padding: 0 40px;
   height: 65px;
   width: 100%;
   border-spacing: 00;
+  background-color: #000;
+  z-index: 50;
 }
 .nav_box .logo {
   /* float: left;
@@ -247,13 +261,35 @@ export default {
 /* 搜索框  */
 .nav_box .search_box {
 }
+.nav_box .search_input{
+  float: left;
+  padding: 5px 0 5px 5px;
+  margin-top: 5px;
+  min-width: 195px;
+  border: 1px solid #333;
+}
+.nav_box .search_input:active{
+
+}
 .nav_box .search_box .logo {
   width: 16px;
   height: 16px;
-  margin-top: 3px;
+  margin-top: 1px;
 }
 .nav_box .logo.search {
   background: url(../../static/image/svg/search.svg);
+}
+.nav_box .search_input .logo{
+  float: left;
+} 
+.nav_box .search_input input{
+  float: left;
+  outline: none;
+  border: none;
+  line-height: 20px;
+  text-indent: 5px;
+  background-color: inherit;
+  color: #888;
 }
 /* 登陆栏 */
 .login_land {

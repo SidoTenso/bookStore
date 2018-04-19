@@ -18,8 +18,8 @@ class DbBase {
 
     }
 
-    getData(filter,callback){
-        return this.model.find(filter,callback)
+    getData(...args){
+        return this.model.find(...args)
     }
 
     getDataById(id,callback){
