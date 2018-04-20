@@ -22,10 +22,15 @@ app.post('/getphotos',(req,res)=>{
         })
     })
 })
+
+// 获取用户所有照片列表
+
+
+
 // 获取收藏照片列表
 app.post('/getCollects',(req,res)=>{
     let limit = req.query.limit ? ~~req.query.limit: 0;
-    userdb.getDataById(req.body.id).limit(limit).populate('collect', 'src _div').then(data=>{
+    userdb.getDataById(req.body.id).limit(limit).populate('collect', 'src _id').then(data=>{
         console.log(data)
         res.status(200).json({
             status: 1,
@@ -37,9 +42,16 @@ app.post('/getCollects',(req,res)=>{
 // 获取某个用户照片列表
 app.post('/getphotosById',(req,res)=>{
     let filter = {},
+        status = req.body.status,
         limit = req.body.limit ? ~~req.body.limit: 0;
     filter.author = req.body.id;
-    filter.status = 'pass';
+    if(!status){
+        filter.status = 'pass';
+    }else if(status == 'all'){
+
+    }else{
+        filter.status = status
+    }
     prodb.getData(filter).limit(limit).populate('author').then(data=>{
         console.log(111111111111111111111)
         res.status(200).json({
@@ -134,6 +146,48 @@ app.post('/getComments',(req,res)=>{
                     data:result
                 })
             }
+        })
+    }
+})
+
+
+// 审核照片
+app.post('/checkProd',(req,res)=>{
+    prodb.getDataById(req.body.id).then(prod=>{
+        if(req.body.status === "true"){
+            prod.status = 'pass';
+        }else if(req.body.status === "false"){
+            
+            prod.status = 'unpass';
+        }
+        prod.save(err=>{
+            if(!err){
+
+                res.redirect(req.body.originUrl)
+            }
+        })
+    })
+})
+
+// 删除照片
+app.post('/delProd',(req,res)=>{
+    if(req.body.status === "false"){
+        prodb.getDataById(req.body.id).then(prod=>{
+            prod.remove(err=>{
+                if(!err){
+                    res.redirect(req.body.originUrl)
+                }
+            })
+        })
+    }else if(req.body.status === "true"){
+        prodb.getDataById(req.body.id).then(prod=>{
+            prod.status = 'pass';
+            prod.save(err=>{
+                if(!err){
+    
+                    res.redirect(req.body.originUrl)
+                }
+            })
         })
     }
 })

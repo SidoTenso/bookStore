@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>登录</title>
+	{{include '../shared/_header'}}
+	<link href="/admin/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+</head>
+
+<body>
+	<div class="weui-toptips weui-toptips_warn js_tooltips weui-icon-warn" id="errTip" style="display: none;">错误提示</div>
+	<div class="weui-toptips weui-toptips_warn weui-toptips_success weui-icon-success js_tooltips" id="successTip" style="display: none;">注册成功</div>
+	<div class="weui-tab">
+		<div class="weui-tab__panel">
+			<p class="myTitle" style="background-color:#457FA4;color:white;">个人中心</p>
+			<div class="myHead">
+				<img src="/uploads/1510054459047.jpg" alt="">
+				<span>{{user.name}}</span>
+			</div>
+			<div class="userInfo">
+				<div class="infoBtn">
+					<i class="fa fa-user weui-tabbar__icon"></i>
+					<span>个人资料</span>
+					<span class="fa arrow"></span>
+				</div>
+				<div class="infoShow">
+					<p>手机号码：{{user.mobile}}</p>
+					<p>邮箱地址：{{user.email}}</p>
+					<p>家庭地址：{{user.address}}</p>
+				</div>
+			</div>
+			<div class="userInfo">
+				<a href="/admin/users/edit/{{user.id}}">
+					<div class="editInfo">
+						<i class="fa fa-pencil weui-tabbar__icon"></i>
+						<span>编辑资料</span>
+						<span class="fa arrow"></span>
+					</div>
+				</a>
+			</div>
+			<button class="delCookie weui-btn weui-btn_danger">退出登录</button>
+
+		</div>
+		{{include '../shared/_footer_nav'}}
+	</div>
+
+	{{include '../shared/_bottom'}}
+	<script>
+		$('.infoBtn').click(() => {
+			$('.infoShow').toggleClass('isShow')
+		})
+		$('.delCookie').click(function () {
+			var exp = new Date();
+			exp.setTime(exp.getTime() - 1);
+			var cval = getCookie('userid');
+			if (cval != null)
+				document.cookie = 'userid' + "=" + cval + ";expires=" + exp.toGMTString();
+				location.reload();
+		})
+		function getCookie(name) {
+			var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+
+			if (arr = document.cookie.match(reg))
+
+				return (arr[2]);
+			else
+				return null;
+		}
+	</script>
+</body>
+
+</html>

@@ -16,23 +16,30 @@
           </td> 
          <td class="login_r"> 
           <div style=""> 
+            <form action="#" @submit="postMsg">
+
+            
            <div v-if="!isLoading" class=""> 
             <center> 
              <div v-if="modelConfig.isRegist" class="input_box"> 
-              <input type="text" class="logininput2" v-model="userName" autocomplete="off" placeholder="用户名" spellcheck="false" /> 
+              <input type="text" class="logininput2" v-model="userName" autocomplete="off" placeholder="昵称" spellcheck="false" pattern="[a-zA-z0-9_-]{4,8}" required/> 
              </div> 
              <div class="input_box"> 
-              <input type="text" class="logininput2" v-model="email" autocomplete="off" placeholder="邮箱" spellcheck="false" /> 
+              <input type="email" class="logininput2" v-model="email" autocomplete="off" placeholder="邮箱" spellcheck="false" required /> 
              </div> 
              <div class="input_box"> 
-              <input type="password" class="logininput2" v-model="psw" placeholder="密码"/> 
+              <input type="password" class="logininput2" v-model="psw" placeholder="密码" pattern="[a-zA-z0-9_-]{8,16}" required/> 
+             </div> 
+             <div v-if="modelConfig.isRegist" class="input_box"> 
+              <input type="password" class="logininput2" v-model="repsw" placeholder="确认密码" pattern="[a-zA-z0-9_-]{8,16}" required/> 
              </div> 
              <div class="btn_box"> 
-              <span class="login_btn btn" @click="postMsg">{{modelConfig.tit}}</span> 
+              <button class="login_btn btn">{{modelConfig.tit}}</button> 
               <span class="btn cancle_btn" @click="emitParent('finished','cancle')" style="">取消</span> 
              </div> 
             </center> 
            </div> 
+           </form>
            <div v-if="isLoading" class="logining"> 
               <center>
                 {{loadingMsg}}
@@ -62,12 +69,19 @@ export default {
       userName: "",
       email: "",
       psw: "",
+      repsw: '',
       isLoading: false,
       loadingMsg: this.modelConfig.tit
     };
   },
   methods: {
-    postMsg() {
+    postMsg(e) {
+      e.preventDefault();
+      if(this.modelConfig.isRegist && this.psw != this.repsw){
+        alert('两次密码不一致')
+        return
+
+      }
       let url = this.modelConfig.isRegist ? this.url.register : this.url.login;
       this.isLoading = true;
       this.loadingMsg =  this.modelConfig.tit+'中，请稍候...';
@@ -175,6 +189,14 @@ export default {
   overflow: hidden;
   margin-bottom: 15px;
 }
+.login_r .errinfo{
+  width: 325px;
+  height: 25px;
+  line-height: 25px;
+  text-indent: 10px;
+  color: red;
+  font-size: 13px;
+}
 .login_r .input_box.active {
   border: 1px solid #333;
 }
@@ -196,8 +218,10 @@ export default {
     rgba(70, 70, 70, 0.4),
     rgba(126, 126, 126, 0.4),
     rgba(70, 70, 70, 0.4)
+
   );
   border-radius: 5px;
+  border: none;
   color: #aaa;
 }
 .login_r .btn_box .btn.cancle_btn {

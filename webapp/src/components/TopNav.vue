@@ -19,11 +19,6 @@
                     照片
                     </router-link>
                   </li>
-                  <li class="list_item">
-                    <router-link  to="/pic">
-                      版画
-                    </router-link>
-                  </li>
                   <li class="list_item" @click="upload">
                     上传
                   </li>
@@ -59,6 +54,17 @@
                   <div class="user_box">
                     <div class="username">
                       {{userInfo.userName}}
+                    </div>
+                    <div class="loginsetting">
+                      <div class="item" >
+                        <router-link to="/usercenter">
+                        <div>
+                          用户中心
+                        </div>
+                          
+                        </router-link>
+                      </div>
+                      <div class="item" @click="logout">退出</div>
                     </div>
                   </div>
                 </template>
@@ -180,6 +186,10 @@ export default {
         // return this.log
       }
     },
+    logout(){
+      this.cookies.clearCookie('userId');
+      location.href = '/'
+    },
 
     upload() {
       this.isUploadShow = true;
@@ -189,6 +199,9 @@ export default {
       this.bus.$on('showLogin',(type)=>{
         // console.log(args)
         this.showModel(type)
+      });
+      this.bus.$on('setUserInfo',(userInfo)=>{
+        this.userInfo = userInfo;
       })
     }
 
@@ -205,7 +218,7 @@ export default {
   left: 0;
   width: 100%;
   height: 65px;
-  overflow: hidden;
+  /* overflow: hidden; */
   background-color: #000;
   z-index: 1000;
 }
@@ -312,8 +325,10 @@ export default {
 }
 .login_land .user_box {
   float: right;
+  position: relative;
   /* width: 100%; */
   padding: 0 15px;
+  line-height: 65px;
   cursor: pointer;
   height: 100%;
 }
@@ -321,4 +336,34 @@ export default {
   /* padding: 0 15px; */
   text-align: right;
 }
+.login_land .user_box .loginsetting{
+  display: none;
+  position: absolute;
+  /* height: 50px; */
+  width: 120px;
+  top:  65px;
+  right: 0;
+  background-color: #222;
+}
+.login_land .user_box:hover .loginsetting{
+  display: block;
+}
+.login_land .user_box .loginsetting .item{
+  box-sizing: border-box;
+  width: 100%;
+  padding-left: 20px;
+  font-size: 15px;
+  height: 30px;
+  line-height: 30px;
+  text-align: left;
+  border-bottom: 1px solid #333;
+  
+}
+.login_land .user_box .loginsetting .item:hover{
+  background-color: #383838;
+}
+.login_land .user_box .loginsetting .item a{
+  color: #aaa
+}
+
 </style>

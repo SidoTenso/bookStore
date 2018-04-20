@@ -1,5 +1,7 @@
 export default {
     "server": "http://localhost:3000",
+    "getUserInfo": "http://localhost:3000/admin/getUserInfo",
+    "setUserInfo": "http://localhost:3000/admin/setUserInfo",
     "getPhotoInfo": "http://localhost:3000/prod/getPhotoInfo",
     "getPhotos": "http://localhost:3000/prod/getphotos",
     "uploadComment": "http://localhost:3000/prod/uploadComment",
@@ -14,4 +16,6 @@ export default {
     "recoment": "http://localhost:3000/admin/recoment",
     "usercomment": "http://localhost:3000/admin/comment",
     "getSearch": "http://localhost:3000/admin/getSearch",
+    "getmagazines": "http://localhost:3000/static/getmagazines",
+    "getAllPhotos": "http://localhost:3000/prod/getAllPhotos",
 }

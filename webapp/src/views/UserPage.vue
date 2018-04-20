@@ -5,7 +5,7 @@
         </div>
         <div class="user_box">
             <div class="user_img">
-                <img src="../../static/image/svg/account.svg" alt="">
+                <img :src="userPic" alt="">
                 
             </div>
             <div class="user_info">
@@ -117,7 +117,8 @@ export default {
         isAttention: false,
         showFans: false,
         attentionMsg_priv: '关注',
-        comment_cont: ''
+        comment_cont: '',
+        userPic: ''
     };
   },
   created() {
@@ -199,6 +200,7 @@ export default {
           }).then(res=>{
               if(res.data && res.data.status == 1){
                   this.collects = res.data.data.collect;
+                  this.userPic = res.data.data.userPic
                   console.log(res)
               }
           })

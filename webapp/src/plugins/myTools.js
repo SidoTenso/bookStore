@@ -23,7 +23,13 @@ module.exports = {
                 exdate.setDate(exdate.getDate() + expiredays);
                document.cookie = name + "=" + encodeURI(value) + ((expiredays == null) ? "" : ";expires=" + exdate.toUTCString());
               },
-            
+            clearCookie(name){
+                var exdate = new Date();
+                exdate.setDate(exdate.getDate() - 1);
+                var cval=this.getCookie(name);
+                if(cval!=null)
+                document.cookie= name + "="+cval+";expires="+exdate.toUTCString();
+            }
             
         }
         Vue.prototype.fetch = function(contentType){

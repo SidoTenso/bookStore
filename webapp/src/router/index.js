@@ -5,8 +5,10 @@ import Main from '@/views/Main'
 // import Register from '@/views/Register'
 import Photos from '@/views/Photos'
 import UserPage from '@/views/UserPage'
+import UserCenter from '@/views/UserCenter'
 import photoList from '@/views/photoList'
 import Books from '@/views/Books'
+import Magazines from '@/views/Magazines'
 
 Vue.use(Router)
 
@@ -28,9 +30,19 @@ export default new Router({
       component: UserPage
     },
     {
+      path: '/usercenter',
+      name: 'usercenter',
+      component: UserCenter
+    },
+    {
       path: '/photoList',
       name: 'photoList',
       component: photoList
+    },
+    {
+      path: '/magin',
+      name: 'magin',
+      component: Magazines
     },
     {
       path: '/books',

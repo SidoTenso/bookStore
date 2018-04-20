@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>未审核照片列表</title>
+    {{include '../shared/_common_top'}}
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>{{nowPage == 'unpass'?'审核未通过照片':'未审核照片'}}</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <!-- 此表单没有指定action和method
+						默认提交到当前页面
+						默认使用get方式提交
+						 -->
+                                <form class="form-inline" id="mainForm" action="/admin/photos/{{nowPage}}?tp=name">
+                                    <div class="form-group">
+                                        <label>作品名</label>
+                                        <input type="text" class="form-control" name="prodName" value="{{query}}" placeholder="请输入作品名进行查找">
+                                        <input type="hidden" name="tp" value="name">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary fa fa-search">查询</button>
+                                </form>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="" style="height:35px;">
+                                    <!-- <a href="/admin/book/add" class="btn btn-danger">添加</a> -->
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>照片</th>
+                                    <th>作品名</th>
+                                    <th>分类</th>
+                                    <th>作者</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{each list}}
+                                <tr>
+                                    <td>{{$index+1}}</td>
+                                    <td onclick="showimg('{{$value.src}}')" data-toggle="modal" data-target=".bs-example-modal-lg"><img src="{{$value.src}}" style="width: 80px;"></td>
+                                    <td>{{$value.prodName}}</td>
+                                    <td>{{status[$value.attr]}}</td>
+                                    <td>{{$value.author}}</td>
+                                    <td>
+                                        <i onclick='passProd("{{$value.id}}",false)' class="btn btn-sm btn-default fa fa-remove"></i>
+                                        <!-- fontawesome字体图标
+									http://fontawesome.io/
+								 -->
+                                        <i onclick='passProd("{{$value.id}}",true)' class="fa fa-check btn btn-sm btn-default"></i>
+                                        <script>
+                                            console.log("{{$value.id}}")
+                                        </script>
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                        <!-- <div class="row">
+                            <div class="col-sm-3">
+                                <div class="dataTables_info">共{{pageCount}}页数据</div>
+                            </div>
+                            <div class="col-sm-9">
+                                <div class="dataTables_paginate paging_simple_numbers">
+                                    <ul class="pagination">
+                                        {{if pageIndex>1}}
+                                        <li class="paginate_button previous">
+                                            <a href="/admin/book/list/{{pageIndex-1}}">上一页</a>
+                                        </li>
+                                        {{else}}
+                                        <li class="paginate_button previous disabled">
+                                            <a href="#">上一页</a>
+                                        </li>
+                                        {{/if}}
+                                        {{each pages}}
+                                        {{if $value==pageIndex}}
+                                        <li class="paginate_button active">
+                                            <a href="#">{{$value}}</a>
+                                        </li>
+                                        {{else}}
+                                        <li class="paginate_button">
+                                            <a href="/admin/book/list/{{$value}}">{{$value}}</a>
+                                        </li>
+                                        {{/if}}
+                                        {{/each}}
+                                        {{if pageIndex<pageCount}}
+                                        <li class="paginate_button next">
+                                            <a href="/admin/book/list/{{pageIndex+1}}">下一页</a>
+                                        </li>
+                                        {{else}}
+                                        <li class="paginate_button next disabled">
+                                            <a href="#">下一页</a>
+                                        </li>
+                                        {{/if}}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- 图片模态框 -->
+    <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="display:table-cell;border:none;background-color: rgba(0,0,0,0.3);width: 500px;height: 400px;vertical-align: middle;text-align: center">
+                <img src="" alt="" style="max-width: 480px; max-height: 300px;" id="showImg">
+            </div>
+        </div>
+    </div>
+    
+    
+    <!-- 在页面上创建一个隐藏的表单做删除时使用 -->
+    <form action="{{nowPage == 'unpass'?'/prod/delProd':'/prod/checkProd'}}" id="delForm" method="post">
+        <input type="hidden" name="id" id="proid">
+        <input type="hidden" name="status" id="prostatus">
+        <input type="hidden" name="originUrl" id="originUrl">
+    </form>
+    <!-- <script type="text/javascript" src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+	<script type="text/javascript" src="http://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+	{{include '../shared/_common_bottom'}}
+    <script>
+        function showimg(img){
+            $('#showImg').attr('src',img)
+        }
+    function passProd (id,status) {
+        // 通过confirm弹出提示
+        var nowPage = '{{nowPage}}';
+        var confirmMsg = '';
+        if(nowPage == 'unpass'){
+            confirmMsg = status?'确认此照片审核通过?': '确认删除此照片?'
+        }else{
+            confirmMsg = status?'确认此照片审核通过?': '确认此照片审核不通过?'
+        }
+        alert(location.href)
+        if (confirm(confirmMsg)) {
+            // alert(id)
+            // 可以通过ajax实现删除
+            // $.ajax(...
+            $('#proid').val(id)
+            $('#prostatus').val(status)
+            $('#originUrl').val(location.href)
+
+            $('#delForm').submit() //触发表单提交事件
+        }
+    }
+    </script>
+</body>
+
+</html>
