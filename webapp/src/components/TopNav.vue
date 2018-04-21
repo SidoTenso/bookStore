@@ -27,11 +27,6 @@
                       杂志
                     </router-link>
                   </li>
-                  <li class="list_item">
-                    <router-link to="/books">
-                      图书
-                    </router-link>
-                  </li>
                 </ul>
               </td>
               <!-- 搜索栏 -->

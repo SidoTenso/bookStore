@@ -425,6 +425,11 @@ app.post('/comment', (req, res) => {
 
                     }
                 })
+            }else{
+                res.status(200).json({
+                    status: 5,
+                    msg: '请重新登录'
+                })
             }
         })
     }

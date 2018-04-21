@@ -56,7 +56,7 @@
                   
           </div>
           <div class="btm_r">
-              <router-link to="/buy">Buy</router-link>
+              <!-- <router-link to="/buy">Buy</router-link> -->
               <div class="comment_icon" @click="iscommentShow=!iscommentShow">
                 <div class="icon comment"></div>
               </div>
@@ -114,7 +114,7 @@ export default {
             })
         },
         uploadComment(){
-            if(this.comment_cont && this.cookies.getCookie('userId')){
+            if(this.comment_cont && this.$root.$data.isLogined){
                 this.fetch().post(this.urls.uploadComment,{
                     comment: this.comment_cont,
                     id: this.id
@@ -125,13 +125,13 @@ export default {
                     }
                 })
                 this.comment_cont = '';
-            }else if(!this.cookies.getCookie('userId')){
+            }else if(!this.cookies.getCookie('userId')|| !this.$root.$data.isLogined){
                 this.bus.$emit('showLogin',1)
             }
         },
         collectPhoto(){
-            if(this.cookies.getCookie('userId')){
-                if(!this.isCollect_prive){
+            if(this.cookies.getCookie('userId') && this.$root.$data.isLogined){
+                if(!this.isCollect_prive ){
                     this.fetch().post(this.urls.collect,{
                         userId: this.cookies.getCookie('userId'),
                         photo: this.id

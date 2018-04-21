@@ -252,7 +252,11 @@ export default {
                   id: this.$route.query.id,
               }).then(res=>{
                 //   console.log(res)
-                this.getComments();
+                if(res.data.status == 1){
+                    this.getComments();
+                }else{
+                    alert(res.data.msg)
+                }
               })
           }else{
               alert('请先登录')
