@@ -43,7 +43,7 @@ class Mail extends dbBase{
             from: 'Sidotenso@163.com',
             to: opts.email,
             subject: '激活账号',
-            html: `<h1>打开链接激活账号</h1> <a href="${ serverUrl }/admin/activation?key=${ opts.keyValue }" target="_blank">${ serverUrl }?key= ${ opts.keyValue }</a>`
+            html: `<h1>打开链接激活账号</h1> <a href="${ serverUrl }/admin/activation?key=${ opts.keyValue }" target="_blank">${ serverUrl }/admin/activation?key=${ opts.keyValue }</a>`
         })
     }
 }

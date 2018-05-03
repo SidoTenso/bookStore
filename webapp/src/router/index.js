@@ -49,15 +49,5 @@ export default new Router({
       name: 'books',
       component: Books
     }
-    // {
-    //   path: '/login',
-    //   name: 'login_view',
-    //   component: Login
-    // },
-    // {
-    //   path: '/register',
-    //   name: 'register_view',
-    //   component: Register
-    // }
   ]
 })

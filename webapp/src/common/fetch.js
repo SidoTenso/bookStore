@@ -58,7 +58,7 @@ const formData = Axios.create({
   }
 })
   
-  export {
-    urlencoded,
-    formData
-  }
+export {
+  urlencoded,
+  formData
+}

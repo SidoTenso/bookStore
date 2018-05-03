@@ -3,7 +3,7 @@ import urls from '../common/urls'
 import Vue from 'vue'
 const bus = new Vue();
 
-module.exports = {
+export default {
     install: function(Vue,options){
 
         // 操作cookie
